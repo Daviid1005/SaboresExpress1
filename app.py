@@ -1,4 +1,4 @@
-# Importación de módulos necesarios para la aplicación Flask
+uuid# Importación de módulos necesarios para la aplicación Flask
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -10,6 +10,7 @@ import shutil
 import uuid
 from functools import wraps
 from datetime import datetime
+from dotenv import load_dotenv
 
 # Creación de la instancia de la aplicación Flask
 app = Flask(__name__)
@@ -20,9 +21,15 @@ app.secret_key = os.urandom(24)
 # Clave secreta para acceso a finanzas (cámbiala por una segura)
 FINANZAS_KEY = "root10"  # Cambia esto en producción
 
-# Configuración de la URI de la base de datos PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:root@localhost:5432/sabores_express'
-# Desactivar el seguimiento de modificaciones para mejorar el rendimiento
+
+
+load_dotenv()  # Para .env local (opcional)
+
+database_url = os.environ.get('DATABASE_URL')
+if database_url and database_url.startswith('postgres://'):
+    database_url = database_url.replace('postgres://', 'postgresql://', 1)  # Fix importante para SQLAlchemy
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url or 'postgresql://postgres:root@localhost:5432/sabores_express'  # Fallback local
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
@@ -1218,7 +1225,7 @@ def editar_carrito(restaurante_id, menu_id):
 
 # Contexto de la aplicación para inicializar la base de datos y poblar datos iniciales
 with app.app_context():
-    db.create_all()  # Crear todas las tablas definidas
+   # db.create_all()  # Crear todas las tablas definidas
 
 
     # === DATOS INICIALES PARA PRODUCTOS AGRÍCOLAS ===
