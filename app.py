@@ -1,4 +1,4 @@
-uuid# Importación de módulos necesarios para la aplicación Flask
+
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -7,7 +7,7 @@ from authlib.integrations.flask_client import OAuth
 import os
 from werkzeug.utils import secure_filename
 import shutil
-import uuid
+import uuid # Importación de módulos necesarios para la aplicación Flask
 from functools import wraps
 from datetime import datetime
 from dotenv import load_dotenv
