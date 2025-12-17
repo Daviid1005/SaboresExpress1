@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaboresExpress</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+    <!-- ESTILOS LOCALES -->
+    <style>
+        .btn-agricola {
+            background: #27ae60;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95em;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        .btn-agricola:hover { background: #219653; }
+
+        .cart-button {
+            background: #f39c12;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        /* MODAL CARRITO DE MENÚS */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow: auto;
+        }
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close:hover { color: #000; }
+        .carrito-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .carrito-table th, .carrito-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        .carrito-table th { background: #f2f2f2; font-weight: bold; }
+        .delete-button { background: #e74c3c; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+        .carrito-button { background: #27ae60; color: white; border: none; padding: 12px 20px; border-radius: 8px; width: 100%; margin-top: 15px; font-size: 1.1em; cursor: pointer; }
+    </style>
+</head>
+
+<body class="with-background">
+
+<header>
+    <div class="header-actions-left">
+        <a href="{{ url_for('restaurantes') }}" class="back-button">Volver</a>
+    </div>
+    <h1>SaboresExpress</h1>
+    <p>¡Explora los mejores restaurantes!</p>
+    <div class="header-actions">
+        {% if 'user_id' in session or 'guest' in session %}
+            <!-- BOTÓN CARRITO DE MENÚS -->
+            {% if session.get('carrito') and session['carrito']|length > 0 %}
+                <button id="carritoButton" class="cart-button">
+                    Carrito ({{ session['carrito']|length }})
+                </button>
+            {% endif %}
+
+            <!-- BOTÓN A MERCADO AGRÍCOLA -->
+            <a href="{{ url_for('agricola_market') }}" class="btn-agricola">
+                Productos Agrícolas
+            </a>
+        {% endif %}
+
+        {% if 'user_id' in session %}
+            <a href="{{ url_for('logout') }}" class="logout">Cerrar Sesión</a>
+        {% elif 'guest' in session %}
+            <a href="{{ url_for('logout') }}" class="logout">Salir del Modo Invitado</a>
+        {% endif %}
+    </div>
+</header>
+
+<div class="main-with-sidebar">
+    <div class="sidebar">
+        <h3>Restaurantes Populares</h3>
+        <ul class="popular-list">
+            {% for restaurante, count in restaurantes_populares %}
+                <li>
+                    <a href="{{ url_for('menu', restaurante_id=restaurante.id) }}">
+                        {{ restaurante.nombre }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="search-bar">
+            <form method="GET" action="{{ url_for('restaurantes') }}">
+                <label for="busqueda">Buscar Restaurante:</label>
+                <input type="text" id="busqueda" name="busqueda" value="{{ busqueda }}">
+                <button type="submit">Buscar</button>
+            </form>
+        </div>
+
+        <div class="restaurantes-grid">
+            <h2>Restaurantes</h2>
+            {% if restaurantes %}
+                <div class="category-sections">
+                    <!-- Sección Sushi -->
+                    <div class="category-section">
+                        <h3>Sushi</h3>
+                        <div class="grid-container">
+                            {% for restaurante in restaurantes | selectattr('categoria', 'equalto', 'Sushi') %}
+                                <div class="restaurant-card">
+                                    <img src="{{ url_for('static', filename=restaurante.imagen) }}" alt="{{ restaurante.nombre }}" class="restaurant-image">
+                                    <div class="restaurant-info">
+                                        <h3>
+                                            <a href="{{ url_for('menu', restaurante_id=restaurante.id) }}">
+                                                {{ restaurante.nombre }}
+                                            </a>
+                                        </h3>
+                                        <p>{{ restaurante.descripcion }}</p>
+                                        <p><strong>Categoría:</strong> {{ restaurante.categoria }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Sección Pollo -->
+                    <div class="category-section">
+                        <h3>Pollo</h3>
+                        <div class="grid-container">
+                            {% for restaurante in restaurantes | selectattr('categoria', 'equalto', 'Pollo') %}
+                                <div class="restaurant-card">
+                                    <img src="{{ url_for('static', filename=restaurante.imagen) }}" alt="{{ restaurante.nombre }}" class="restaurant-image">
+                                    <div class="restaurant-info">
+                                        <h3>
+                                            <a href="{{ url_for('menu', restaurante_id=restaurante.id) }}">
+                                                {{ restaurante.nombre }}
+                                            </a>
+                                        </h3>
+                                        <p>{{ restaurante.descripcion }}</p>
+                                        <p><strong>Categoría:</strong> {{ restaurante.categoria }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Sección Casa China -->
+                    <div class="category-section">
+                        <h3>Casa China</h3>
+                        <div class="grid-container">
+                            {% for restaurante in restaurantes | selectattr('categoria', 'equalto', 'Casa China') %}
+                                <div class="restaurant-card">
+                                    <img src="{{ url_for('static', filename=restaurante.imagen) }}" alt="{{ restaurante.nombre }}" class="restaurant-image">
+                                    <div class="restaurant-info">
+                                        <h3>
+                                            <a href="{{ url_for('menu', restaurante_id=restaurante.id) }}">
+                                                {{ restaurante.nombre }}
+                                            </a>
+                                        </h3>
+                                        <p>{{ restaurante.descripcion }}</p>
+                                        <p><strong>Categoría:</strong> {{ restaurante.categoria }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Sección Comidas Rápidas -->
+                    <div class="category-section">
+                        <h3>Comidas Rápidas</h3>
+                        <div class="grid-container">
+                            {% for restaurante in restaurantes | selectattr('categoria', 'equalto', 'Comidas Rápidas') %}
+                                <div class="restaurant-card">
+                                    <img src="{{ url_for('static', filename=restaurante.imagen) }}" alt="{{ restaurante.nombre }}" class="restaurant-image">
+                                    <div class="restaurant-info">
+                                        <h3>
+                                            <a href="{{ url_for('menu', restaurante_id=restaurante.id) }}">
+                                                {{ restaurante.nombre }}
+                                            </a>
+                                        </h3>
+                                        <p>{{ restaurante.descripcion }}</p>
+                                        <p><strong>Categoría:</strong> {{ restaurante.categoria }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p>No se encontraron restaurantes.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Formas de Pago -->
+    <div class="formas-pago">
+        <h3>Formas de Pago</h3>
+        {% if 'user_id' in session %}
+            <div class="payment-options">
+                <label><input type="radio" name="metodo_pago" value="tarjeta" onclick="openPaymentModal('tarjeta')"> Tarjeta</label>
+                <label><input type="radio" name="metodo_pago" value="banca_movil" onclick="openPaymentModal('banca_movil')"> Banca Móvil</label>
+                <label><input type="radio" name="metodo_pago" value="transferencia" onclick="openPaymentModal('transferencia')"> Transferencia</label>
+            </div>
+        {% else %}
+            <p>Por favor, inicia sesión para seleccionar un método de pago.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- MODAL CARRITO DE MENÚS -->
+<div id="carritoModal" class="modal">
+    <div class="modal-content">
+        <span class="close">x</span>
+        <h2>Tu Carrito</h2>
+        {% if session.get('carrito') and session['carrito']|length > 0 %}
+            <table class="carrito-table">
+                <thead>
+                    <tr><th>Plato</th><th>Cant.</th><th>Precio</th><th>Subtotal</th><th></th></tr>
+                </thead>
+                <tbody>
+                    {% for item in session['carrito'] %}
+                        <tr>
+                            <td>{{ item.nombre }}</td>
+                            <td>{{ item.cantidad }}</td>
+                            <td>${{ "%.2f"|format(item.precio) }}</td>
+                            <td>${{ "%.2f"|format(item.subtotal) }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('eliminar_carrito', index=loop.index0) }}">
+                                    <button type="submit" class="delete-button">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="3"><strong>Total</strong></td>
+                        <td colspan="2"><strong>${{ "%.2f"|format(total_carrito) }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <a href="{{ url_for('confirmar_pedido') }}" class="carrito-button">Confirmar Pedido</a>
+        {% else %}
+            <p class="empty-cart">El carrito está vacío.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- MODAL DE PAGO -->
+<div id="paymentModal" class="modal">
+    <div class="modal-content payment-modal">
+        <span class="close">x</span>
+        <h2>Detalles del Método de Pago</h2>
+        <form method="POST" action="{{ url_for('seleccionar_pago') }}" id="paymentForm">
+            <input type="hidden" id="metodo_pago_hidden" name="metodo_pago">
+            <div id="tarjetaFields" class="payment-fields">
+                <h3>Tarjeta de Crédito/Débito</h3>
+                <div class="form-group">
+                    <label for="numero_tarjeta">Número de Tarjeta:</label>
+                    <input type="text" id="numero_tarjeta" name="numero_tarjeta" placeholder="1234-5678-9012-3456">
+                </div>
+                <div class="form-group">
+                    <label for="fecha_vencimiento">Fecha de Vencimiento (MM/AA):</label>
+                    <input type="text" id="fecha_vencimiento" name="fecha_vencimiento" placeholder="MM/AA">
+                </div>
+                <div class="form-group">
+                    <label for="cvv">CVV:</label>
+                    <input type="text" id="cvv" name="cvv" placeholder="123">
+                </div>
+            </div>
+            <div id="bancaMovilFields" class="payment-fields" style="display: none;">
+                <h3>Banca Móvil</h3>
+                <div class="form-group">
+                    <label for="numero_celular">Número de Celular:</label>
+                    <input type="tel" id="numero_celular" name="numero_celular" placeholder="Ej: 123-456-7890">
+                </div>
+                <div class="form-group">
+                    <label for="nombre_titular">Nombre del Titular:</label>
+                    <input type="text" id="nombre_titular" name="nombre_titular" placeholder="Tu nombre">
+                </div>
+            </div>
+            <div id="transferenciaFields" class="payment-fields" style="display: none;">
+                <h3>Transferencia Bancaria</h3>
+                <div class="form-group">
+                    <label for="numero_cuenta">Número de Cuenta:</label>
+                    <input type="text" id="numero_cuenta" name="numero_cuenta" placeholder="Ej: 1234567890">
+                </div>
+                <div class="form-group">
+                    <label for="nombre_titular">Nombre del Titular:</label>
+                    <input type="text" id="nombre_titular" name="nombre_titular" placeholder="Tu nombre">
+                </div>
+            </div>
+            <button type="submit" class="submit-button">Guardar Método de Pago</button>
+        </form>
+    </div>
+</div>
+
+<!-- CHATBOT WIDGET -->
+<div id="chatbot" class="chatbot-container" style="display: none;">
+    <div class="chatbot-header">
+        <span>Chatbot de Pedidos</span>
+        <span id="chatbot-close" class="chatbot-close">x</span>
+    </div>
+    <div id="chatbot-messages" class="chatbot-messages"></div>
+    <div class="chatbot-input">
+        <input type="text" id="chatbot-user-input" placeholder="Escribe aquí..." autocomplete="off">
+        <button id="chatbot-send">Enviar</button>
+    </div>
+</div>
+
+<!-- Botón flotante -->
+<button id="chatbot-toggle" class="chatbot-toggle">Chat</button>
+
+<footer>
+    <p>© 2025 SaboresExpress. Todos los derechos reservados.</p>
+</footer>
+
+<!-- SCRIPTS -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // === MODAL CARRITO DE MENÚS ===
+    const carritoModal = document.getElementById("carritoModal");
+    const carritoButton = document.getElementById("carritoButton");
+    const carritoClose = carritoModal.querySelector(".close");
+
+    if (carritoButton) {
+        carritoButton.onclick = () => carritoModal.style.display = "block";
+    }
+    if (carritoClose) {
+        carritoClose.onclick = () => carritoModal.style.display = "none";
+    }
+
+    // === MODAL DE PAGO ===
+    const paymentModal = document.getElementById("paymentModal");
+    const paymentClose = paymentModal.querySelector(".close");
+
+    window.openPaymentModal = function(metodo) {
+        document.getElementById("metodo_pago_hidden").value = metodo;
+        document.getElementById("tarjetaFields").style.display = metodo === "tarjeta" ? "block" : "none";
+        document.getElementById("bancaMovilFields").style.display = metodo === "banca_movil" ? "block" : "none";
+        document.getElementById("transferenciaFields").style.display = metodo === "transferencia" ? "block" : "none";
+
+        setRequiredFields(document.getElementById("tarjetaFields"), metodo === "tarjeta");
+        setRequiredFields(document.getElementById("bancaMovilFields"), metodo === "banca_movil");
+        setRequiredFields(document.getElementById("transferenciaFields"), metodo === "transferencia");
+
+        paymentModal.style.display = "block";
+    };
+
+    function setRequiredFields(container, required) {
+        if (container) {
+            const inputs = container.getElementsByTagName("input");
+            for (let i = 0; i < inputs.length; i++) {
+                inputs[i].required = required;
+            }
+        }
+    }
+
+    if (paymentClose) paymentClose.onclick = () => paymentModal.style.display = "none";
+    window.onclick = (e) => {
+        if (e.target.classList.contains('modal')) e.target.style.display = "none";
+    };
+
+    // === CHATBOT ===
+    const chatbotToggle = document.getElementById('chatbot-toggle');
+    const chatbot = document.getElementById('chatbot');
+    const chatbotClose = document.getElementById('chatbot-close');
+    const chatbotMessages = document.getElementById('chatbot-messages');
+    const chatbotUserInput = document.getElementById('chatbot-user-input');
+    const chatbotSend = document.getElementById('chatbot-send');
+
+    let estado = 'inicio';
+    let restaurantes = [];
+    let menus = [];
+    let restauranteSeleccionado = null;
+    let selectedMenu = null;
+
+    function addMessage(sender, text, isHTML = false) {
+        const msg = document.createElement('div');
+        msg.className = sender === 'bot' ? 'bot-message' : 'user-message';
+        if (isHTML) msg.innerHTML = text;
+        else msg.textContent = text;
+        chatbotMessages.appendChild(msg);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+
+    async function fetchRestaurantes() {
+        try {
+            const res = await fetch('/api/restaurantes');
+            if (!res.ok) throw new Error();
+            restaurantes = await res.json();
+            let lista = '<strong>Restaurantes disponibles:</strong><ul>';
+            restaurantes.forEach((r, i) => {
+                lista += `<li><strong>${i + 1}.</strong> ${r.nombre} <em>(${r.categoria})</em></li>`;
+            });
+            lista += '</ul><small>Escribe el <strong>número</strong> o el <strong>nombre</strong>.</small>';
+            addMessage('bot', lista, true);
+        } catch {
+            addMessage('bot', 'Error al cargar restaurantes.');
+        }
+    }
+
+    async function fetchMenus(restauranteId) {
+        try {
+            const res = await fetch(`/api/menus/${restauranteId}`);
+            if (!res.ok) throw new Error();
+            menus = await res.json();
+            let lista = `<strong>Menús de ${restauranteSeleccionado.nombre}:</strong><ul>`;
+            menus.forEach((m, i) => {
+                lista += `<li><strong>${i + 1}.</strong> ${m.nombre} - <strong>$${parseFloat(m.precio).toFixed(2)}</strong></li>`;
+            });
+            lista += `</ul><small>Escribe el <strong>número</strong> o el <strong>nombre</strong> del plato. Luego te preguntaré la cantidad. O escribe <strong>finalizar</strong>.</small>`;
+            addMessage('bot', lista, true);
+        } catch {
+            addMessage('bot', 'Error al cargar menús.');
+        }
+    }
+
+    async function agregarAlCarrito(menuId, cantidad) {
+        try {
+            const res = await fetch('/api/agregar_carrito', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ restaurante_id: restauranteSeleccionado.id, menu_id: menuId, cantidad })
+            });
+            const data = await res.json();
+            if (data.success) {
+                addMessage('bot', `¡Agregado! ${cantidad > 1 ? cantidad + 'x ' : ''}${data.message.split('agregado')[1] || 'al carrito'}`);
+            } else {
+                addMessage('bot', data.error || 'No se pudo agregar.');
+            }
+        } catch {
+            addMessage('bot', 'Error de conexión.');
+        }
+    }
+
+    async function obtenerCarritoResumen() {
+        try {
+            const res = await fetch('/api/carrito_resumen');
+            const data = await res.json();
+            return data.restaurantes || [];
+        } catch {
+            return [];
+        }
+    }
+
+    function mostrarFinalizar() {
+        addMessage('bot', '¡Pedido listo! Aquí tienes tu carrito:', true);
+        const btn = document.createElement('button');
+        btn.textContent = 'Ver Carrito';
+        btn.className = 'chatbot-btn';
+        btn.onclick = async () => {
+            const resumen = await obtenerCarritoResumen();
+            if (resumen.length > 0) {
+                window.location.href = `/menu/${resumen[0].restaurante_id}`;
+            } else {
+                addMessage('bot', 'Tu carrito está vacío.');
+            }
+            chatbot.style.display = 'none';
+        };
+        const wrapper = document.createElement('div');
+        wrapper.style.textAlign = 'center';
+        wrapper.style.margin = '10px 0';
+        wrapper.appendChild(btn);
+        chatbotMessages.appendChild(wrapper);
+        estado = 'finalizar';
+    }
+
+    function sendMessage() {
+        const input = chatbotUserInput.value.trim();
+        if (!input) return;
+
+        addMessage('user', input);
+        chatbotUserInput.value = '';
+        const lowerInput = input.toLowerCase();
+
+        if (estado === 'elegir_restaurante') {
+            const selected = restaurantes.find(r => r.nombre.toLowerCase() === lowerInput) ||
+                            restaurantes[parseInt(input) - 1];
+            if (selected) {
+                restauranteSeleccionado = selected;
+                addMessage('bot', `¡Perfecto! Vamos a <strong>${selected.nombre}</strong>.`);
+                fetchMenus(selected.id);
+                estado = 'elegir_menu';
+            } else {
+                addMessage('bot', 'No encontré ese restaurante. Prueba con el número o nombre exacto.');
+            }
+        } 
+        else if (estado === 'elegir_menu') {
+            if (lowerInput === 'finalizar' || lowerInput === 'terminar') {
+                mostrarFinalizar();
+            } else {
+                const selected = menus.find(m => m.nombre.toLowerCase().includes(lowerInput)) ||
+                                menus[parseInt(input) - 1];
+                if (selected) {
+                    selectedMenu = selected;
+                    addMessage('bot', `¿Cuántas unidades de ${selected.nombre} quieres? (Mínimo 1)`);
+                    estado = 'elegir_cantidad';
+                } else {
+                    addMessage('bot', 'No encontré ese platillo. Usa el número o nombre parecido.');
+                }
+            }
+        } 
+        else if (estado === 'elegir_cantidad') {
+            if (lowerInput === 'finalizar' || lowerInput === 'terminar') {
+                mostrarFinalizar();
+            } else {
+                const cantidad = parseInt(input);
+                if (!isNaN(cantidad) && cantidad >= 1) {
+                    agregarAlCarrito(selectedMenu.id, cantidad);
+                    addMessage('bot', '¿Qué más quieres agregar? Escribe el número o nombre del plato, o "finalizar".');
+                    estado = 'elegir_menu';
+                    selectedMenu = null;
+                } else {
+                    addMessage('bot', 'Cantidad inválida. Ingresa un número mayor o igual a 1.');
+                }
+            }
+        }
+    }
+
+    // Eventos del chatbot
+    if (chatbotToggle) {
+        chatbotToggle.addEventListener('click', () => {
+            const isOpen = chatbot.style.display === 'block';
+            chatbot.style.display = isOpen ? 'none' : 'block';
+            if (!isOpen && estado === 'inicio') {
+                addMessage('bot', '¡Hola! Soy tu asistente de pedidos. ¿En qué restaurante quieres ordenar hoy?');
+                estado = 'elegir_restaurante';
+                fetchRestaurantes();
+            }
+        });
+    }
+
+    if (chatbotClose) chatbotClose.addEventListener('click', () => chatbot.style.display = 'none');
+    if (chatbotSend) chatbotSend.addEventListener('click', sendMessage);
+    if (chatbotUserInput) {
+        chatbotUserInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>

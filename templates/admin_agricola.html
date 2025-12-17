@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Agrícola - Admin | SaboresExpress</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; margin: 0; padding: 0; }
+        header { background: #27ae60; color: white; padding: 1.5rem; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        header h1 { margin: 0; font-size: 1.8rem; }
+        .back-btn, .logout { 
+            background: #219653; color: white; padding: 8px 16px; border-radius: 6px; 
+            text-decoration: none; font-weight: bold; font-size: 0.9rem; 
+            display: inline-block; margin: 0 8px; 
+        }
+        .back-btn:hover, .logout:hover { background: #1e8449; }
+
+        .content { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+        .mensaje { background: #d4edda; color: #155724; padding: 12px; border-radius: 8px; margin-bottom: 1.5rem; text-align: center; font-weight: 500; }
+
+        .form-container {
+            background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+        .form-container h2 { margin-top: 0; color: #27ae60; border-bottom: 2px solid #27ae60; padding-bottom: 8px; }
+
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; color: #333; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem;
+        }
+        .form-group textarea { height: 90px; resize: vertical; }
+
+        .submit-btn {
+            background: #27ae60; color: white; border: none; padding: 12px 24px;
+            border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer;
+            transition: background 0.3s;
+        }
+        .submit-btn:hover { background: #219653; }
+
+        .admin-table {
+            width: 100%; border-collapse: collapse; background: white; border-radius: 10px;
+            overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-top: 1rem;
+        }
+        .admin-table th {
+            background: #27ae60; color: white; padding: 14px; text-align: left; font-weight: 600;
+        }
+        .admin-table td { padding: 12px 14px; border-bottom: 1px solid #eee; }
+        .admin-table tr:hover { background: #f1f8f5; }
+        .admin-table .delete-btn {
+            background: #e74c3c; color: white; border: none; padding: 6px 12px;
+            border-radius: 5px; cursor: pointer; font-size: 0.85rem;
+        }
+        .admin-table .delete-btn:hover { background: #c0392b; }
+
+        .empty { text-align: center; color: #777; font-style: italic; padding: 2rem; }
+
+        footer { text-align: center; padding: 1.5rem; background: #2c3e50; color: #bdc3c7; font-size: 0.9rem; margin-top: 3rem; }
+
+        @media (max-width: 768px) {
+            .form-group input, .form-group textarea { font-size: 0.95rem; }
+            .admin-table { font-size: 0.9rem; }
+            .admin-table th, .admin-table td { padding: 10px 8px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Gestión de Productos Agrícolas</h1>
+        <div>
+            <a href="{{ url_for('admin') }}" class="back-btn">Volver al Panel</a>
+            <a href="{{ url_for('logout') }}" class="logout">Cerrar Sesión</a>
+        </div>
+    </header>
+
+    <div class="content">
+        <!-- Mensajes Flash -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="mensaje">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Formulario Añadir Producto -->
+        <div class="form-container">
+            <h2>Añadir Producto Agrícola</h2>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="nombre">Nombre del Producto:</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ej: Tomates Maduros" required>
+                </div>
+                <div class="form-group">
+                    <label for="descripcion">Descripción:</label>
+                    <textarea id="descripcion" name="descripcion" placeholder="Origen, calidad, uso recomendado..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="precio_compra">Precio de Compra ($):</label>
+                    <input type="number" id="precio_compra" name="precio_compra" step="0.01" min="0" placeholder="0.00" required>
+                </div>
+                <div class="form-group">
+                    <label for="precio_venta">Precio de Venta ($):</label>
+                    <input type="number" id="precio_venta" name="precio_venta" step="0.01" min="0" placeholder="0.00" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock Inicial:</label>
+                    <input type="number" id="stock" name="stock" min="0" value="0" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label for="imagen">Imagen del Producto:</label>
+                    <input type="file" id="imagen" name="imagen" accept="image/*">
+                </div>
+                <button type="submit" name="agricola" class="submit-btn">Añadir Producto</button>
+            </form>
+        </div>
+
+        <!-- Lista de Productos -->
+        <h2 style="color: #27ae60; border-bottom: 2px solid #27ae60; padding-bottom: 8px;">Productos Registrados</h2>
+        {% if productos %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Precio Compra</th>
+                        <th>Precio Venta</th>
+                        <th>Stock</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in productos %}
+                    <tr>
+                        <td><strong>#{{ p.id }}</strong></td>
+                        <td>{{ p.nombre }}</td>
+                        <td><strong>${{ "%.2f"|format(p.precio_compra) }}</strong></td>
+                        <td><strong>${{ "%.2f"|format(p.precio_venta) }}</strong></td>
+                        <td>
+                            <span style="color: {% if p.stock > 50 %}#27ae60{% elif p.stock > 20 %}#f39c12{% else %}#e74c3c{% endif %}; font-weight: bold;">
+                                {{ p.stock }}
+                            </span>
+                        </td>
+                        <td>
+                            <form method="POST" action="{{ url_for('eliminar_agricola', id=p.id) }}" style="display:inline;">
+                                <button type="submit" class="delete-btn" onclick="return confirm('¿Estás seguro de eliminar {{ p.nombre }}?')">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="empty">No hay productos agrícolas registrados aún.</p>
+        {% endif %}
+    </div>
+
+    <footer>
+        <p>© 2025 SaboresExpress - Panel de Administración</p>
+    </footer>
+</body>
+</html>

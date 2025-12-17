@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaboresExpress</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .alert-success { background: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin: 10px 0; text-align: center; }
+        .alert-error { background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin: 10px 0; }
+    </style>
+</head>
+<body class="with-background">
+    <header>
+        <div class="header-actions-left">
+            <a href="{{ url_for('restaurantes') }}" class="back-button">Volver a Restaurantes</a>
+        </div>
+        <h1>SaboresExpress</h1>
+        <p>Menú de {{ restaurante.nombre }}</p>
+        <div class="header-actions">
+            {% if 'user_id' in session %}
+                <button id="carritoButton" class="cart-button">Carrito ({{ carrito_items | length }})</button>
+                <a href="{{ url_for('logout') }}" class="logout">Cerrar Sesión</a>
+            {% elif 'guest' in session %}
+                <a href="{{ url_for('logout') }}" class="logout">Salir del Modo Invitado</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- MENSAJES FLASH -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert-container">
+                {% for message in messages %}
+                    <div class="alert alert-error">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- MODAL CARRITO -->
+    <div id="carritoModal" class="modal">
+        <div class="modal-content">
+            <span class="close">x</span>
+            <h2>Carrito</h2>
+            <div id="carrito-contenido">
+                {% if carrito_items %}
+                    <table class="carrito-table">
+                        <thead>
+                            <tr>
+                                <th>Ítem</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unitario</th>
+                                <th>Subtotal</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in carrito_items %}
+                                {% set subtotal = item.precio * item.cantidad %}
+                                <tr>
+                                    <td>{{ item.nombre }}</td>
+                                    <td>{{ item.cantidad }}</td>
+                                    <td>${{ "%.2f"|format(item.precio) }}</td>
+                                    <td>${{ "%.2f"|format(subtotal) }}</td>
+                                    <td class="action-buttons">
+                                        <button type="button" 
+                                                class="edit-button"
+                                                data-menu-id="{{ item.menu_id }}"
+                                                data-cantidad="{{ item.cantidad }}"
+                                                data-nombre="{{ item.nombre | escape }}"
+                                                data-restaurante-id="{{ restaurante.id }}">
+                                            Editar
+                                        </button>
+                                        <form method="POST" action="{{ url_for('eliminar_carrito', restaurante_id=restaurante.id, menu_id=item.menu_id) }}" style="display:inline;">
+                                            <button type="submit" class="delete-button">Eliminar</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td colspan="3"><strong>Total</strong></td>
+                                <td><strong>${{ "%.2f"|format(total) }}</strong></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- MÉTODO DE PAGO -->
+                    {% if 'user_id' in session %}
+                        <div class="metodo-pago-section" style="margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+                            <h4>Seleccionar Método de Pago</h4>
+                            <form id="formMetodoPago">
+                                <input type="hidden" name="restaurante_id" value="{{ restaurante.id }}">
+                                <div class="radio-group">
+                                    <label><input type="radio" name="metodo_pago" value="tarjeta" {% if session.metodo_pago == 'tarjeta' %}checked{% endif %}> Tarjeta</label><br>
+                                    <label><input type="radio" name="metodo_pago" value="banca_movil" {% if session.metodo_pago == 'banca_movil' %}checked{% endif %}> Banca Móvil</label><br>
+                                    <label><input type="radio" name="metodo_pago" value="transferencia" {% if session.metodo_pago == 'transferencia' %}checked{% endif %}> Transferencia</label>
+                                </div>
+                                <button type="submit" class="btn-pago">Guardar Método</button>
+                            </form>
+
+                            <div id="metodo-pago-mensaje"></div>
+
+                            {% if session.metodo_pago %}
+                                <p style="margin-top: 10px; color: green; font-weight: bold;">
+                                    Método seleccionado: <strong>{{ session.metodo_pago | capitalize }}</strong>
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        <!-- BOTÓN CONFIRMAR PEDIDO -->
+                        <button id="confirmarPedidoButton" class="carrito-button" style="margin-top: 15px;">
+                            Confirmar Pedido
+                        </button>
+                    {% endif %}
+                {% else %}
+                    <p class="empty-cart">El carrito está vacío.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMAR PEDIDO -->
+    <div id="confirmarPedidoModal" class="modal">
+        <div class="modal-content pedido-modal">
+            <span class="close">x</span>
+            <h2>Confirmar Pedido</h2>
+
+            <!-- MOSTRAR MÉTODO DE PAGO -->
+            <div id="metodo-pago-confirmacion">
+                {% if session.metodo_pago %}
+                    <p style="color: green; font-weight: bold; margin-bottom: 15px;">
+                        Método de pago: <strong>{{ session.metodo_pago | capitalize }}</strong>
+                    </p>
+                {% else %}
+                    <p style="color: red; font-weight: bold; margin-bottom: 15px;">
+                        ¡Debes seleccionar un método de pago en el carrito primero!
+                    </p>
+                {% endif %}
+            </div>
+
+            <form method="POST" action="{{ url_for('confirmar_pedido', restaurante_id=restaurante.id) }}" id="confirmarPedidoForm">
+                <div class="form-group">
+                    <label for="tipo_entrega">Tipo de Entrega:</label>
+                    <select id="tipo_entrega" name="tipo_entrega" required onchange="toggleEntregaFields()">
+                        <option value="domicilio">Entrega a Domicilio</option>
+                        <option value="reserva">Reserva en el Local</option>
+                    </select>
+                </div>
+
+                <div id="domicilioFields" class="delivery-fields">
+                    <h3>Detalles de Entrega a Domicilio</h3>
+                    <div class="form-group">
+                        <label for="direccion">Dirección:</label>
+                        <input type="text" id="direccion" name="direccion" placeholder="Ej: Calle 123, Ciudad" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="numero_celular">Número de Celular:</label>
+                        <input type="tel" id="numero_celular" name="numero_celular" placeholder="Ej: 123-456-7890" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre_cliente_domicilio">Nombre del Cliente:</label>
+                        <input type="text" id="nombre_cliente_domicilio" name="nombre_cliente" placeholder="Tu nombre" required>
+                    </div>
+                </div>
+
+                <div id="reservaFields" class="reservation-fields" style="display: none;">
+                    <h3>Detalles de Reserva</h3>
+                    <div class="form-group">
+                        <label for="nombre_cliente_reserva">Nombre del Cliente:</label>
+                        <input type="text" id="nombre_cliente_reserva" name="nombre_cliente" placeholder="Tu nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="hora_reserva">Hora:</label>
+                        <input type="time" id="hora_reserva" name="hora_reserva" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_reserva">Fecha:</label>
+                        <input type="date" id="fecha_reserva" name="fecha_reserva" min="{{ current_date }}" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-button" 
+                        {% if not session.metodo_pago %}disabled style="background: #ccc; cursor: not-allowed;"{% endif %}>
+                    Finalizar Pedido
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR CANTIDAD -->
+    <div id="editarCantidadModal" class="modal">
+        <div class="modal-content small-modal">
+            <span class="close">x</span>
+            <h3>Editar Cantidad</h3>
+            <p><strong id="editar-nombre"></strong></p>
+            <form method="POST" action="" id="editarCantidadForm">
+                <input type="hidden" name="menu_id" id="editar-menu-id">
+                <div class="form-group">
+                    <label for="nueva_cantidad">Nueva Cantidad:</label>
+                    <input type="number" id="nueva_cantidad" name="cantidad" min="1" required>
+                </div>
+                <button type="submit" class="submit-button">Actualizar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- CHATBOT WIDGET -->
+    <div id="chatbot" class="chatbot-container" style="display: none;">
+        <div class="chatbot-header">
+            <span>Chatbot de Pedidos</span>
+            <span id="chatbot-close" class="chatbot-close">x</span>
+        </div>
+        <div id="chatbot-messages" class="chatbot-messages"></div>
+        <div class="chatbot-input">
+            <input type="text" id="chatbot-user-input" placeholder="Escribe aquí..." autocomplete="off">
+            <button id="chatbot-send">Enviar</button>
+        </div>
+    </div>
+
+    <button id="chatbot-toggle" class="chatbot-toggle">Chat</button>
+
+    <div class="main-with-sidebar">
+        <div class="sidebar">
+            <h3>Menús Populares</h3>
+            <ul class="popular-list">
+                {% for menu, count, restaurante in menus_populares %}
+                    <li>
+                        <a href="{{ url_for('menu', restaurante_id=restaurante.id) }}#menu-{{ menu.id }}">
+                            {{ menu.nombre }} ({{ restaurante.nombre }})
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="content">
+            <div class="search-bar">
+                <form method="GET" action="{{ url_for('menu', restaurante_id=restaurante.id) }}">
+                    <label for="busqueda">Buscar en el Menú:</label>
+                    <input type="text" id="busqueda" name="busqueda" value="{{ busqueda }}">
+                    <button type="submit">Buscar</button>
+                </form>
+            </div>
+
+            <div class="menu-grid">
+                <h2>Menú</h2>
+                {% if menus %}
+                    <div class="grid-container">
+                        {% for item in menus %}
+                            <div class="menu-card" id="menu-{{ item.id }}">
+                                <img src="{{ url_for('static', filename=item.imagen) }}" alt="{{ item.nombre }}" class="menu-image">
+                                <div class="menu-info">
+                                    <h3>{{ item.nombre }}</h3>
+                                    <p>{{ item.descripcion }}</p>
+                                    <p><strong>Precio:</strong> ${{ "%.2f"|format(item.precio) }}</p>
+                                    <p><strong>Categoría:</strong> {{ item.categoria }}</p>
+                                    {% if 'user_id' in session %}
+                                        <form method="POST" action="{{ url_for('agregar_carrito', restaurante_id=restaurante.id, menu_id=item.id) }}">
+                                            <label for="cantidad-{{ item.id }}">Cantidad:</label>
+                                            <input type="number" id="cantidad-{{ item.id }}" name="cantidad" min="1" value="1">
+                                            <button type="submit">Añadir al Carrito</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No se encontraron ítems en el menú.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 SaboresExpress. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // === ELEMENTOS DOM ===
+        const carritoModal = document.getElementById("carritoModal");
+        const carritoBtn = document.getElementById("carritoButton");
+        const carritoSpan = carritoModal.querySelector(".close");
+        const confirmarModal = document.getElementById("confirmarPedidoModal");
+        const confirmarBtn = document.getElementById("confirmarPedidoButton");
+        const confirmarSpan = confirmarModal.querySelector(".close");
+        const editarModal = document.getElementById("editarCantidadModal");
+        const editarSpan = editarModal.querySelector(".close");
+        const editarForm = document.getElementById("editarCantidadForm");
+
+        // === CHATBOT ===
+        const chatbotToggle = document.getElementById('chatbot-toggle');
+        const chatbot = document.getElementById('chatbot');
+        const chatbotClose = document.getElementById('chatbot-close');
+        const chatbotMessages = document.getElementById('chatbot-messages');
+        const chatbotUserInput = document.getElementById('chatbot-user-input');
+        const chatbotSend = document.getElementById('chatbot-send');
+
+        let estado = 'inicio';
+        let restaurantes = [];
+        let menus = [];
+        let restauranteSeleccionado = null;
+        let selectedMenu = null;
+
+        // === ABRIR/CERRAR MODALES ===
+        if (carritoBtn) carritoBtn.onclick = () => carritoModal.style.display = "block";
+        if (carritoSpan) carritoSpan.onclick = () => carritoModal.style.display = "none";
+
+        if (confirmarBtn) {
+            confirmarBtn.onclick = () => {
+                if (!'{{ session.metodo_pago }}') {
+                    alert('Por favor, selecciona un método de pago primero.');
+                    return;
+                }
+                carritoModal.style.display = "none";
+                confirmarModal.style.display = "block";
+            };
+        }
+        if (confirmarSpan) confirmarSpan.onclick = () => confirmarModal.style.display = "none";
+        if (editarSpan) editarSpan.onclick = () => editarModal.style.display = "none";
+
+        window.onclick = (e) => {
+            if (e.target === carritoModal) carritoModal.style.display = "none";
+            if (e.target === confirmarModal) confirmarModal.style.display = "none";
+            if (e.target === editarModal) editarModal.style.display = "none";
+        };
+
+        // === TIPO DE ENTREGA ===
+        function toggleEntregaFields() {
+            const tipo = document.getElementById("tipo_entrega").value;
+            const dom = document.getElementById("domicilioFields");
+            const res = document.getElementById("reservaFields");
+            dom.style.display = tipo === "domicilio" ? "block" : "none";
+            res.style.display = tipo === "reserva" ? "block" : "none";
+            setRequiredFields(dom, tipo === "domicilio");
+            setRequiredFields(res, tipo === "reserva");
+        }
+
+        function setRequiredFields(container, required) {
+            if (container) {
+                container.querySelectorAll("input").forEach(i => i.required = required);
+            }
+        }
+
+        const tipoEntrega = document.getElementById("tipo_entrega");
+        if (tipoEntrega) {
+            tipoEntrega.addEventListener('change', toggleEntregaFields);
+            toggleEntregaFields();
+        }
+
+        const fechaReserva = document.getElementById("fecha_reserva");
+        if (fechaReserva) fechaReserva.min = new Date().toISOString().split("T")[0];
+
+        // === EDITAR CANTIDAD ===
+        document.querySelectorAll('.edit-button').forEach(button => {
+            button.addEventListener('click', function () {
+                const menuId = this.dataset.menuId;
+                const cantidadActual = this.dataset.cantidad;
+                const nombreItem = this.dataset.nombre;
+                const restauranteId = this.dataset.restauranteId;
+
+                document.getElementById("editar-nombre").textContent = nombreItem;
+                document.getElementById("editar-menu-id").value = menuId;
+                document.getElementById("nueva_cantidad").value = cantidadActual;
+
+                editarForm.action = `/editar_carrito/${restauranteId}/${menuId}`;
+                editarModal.style.display = "block";
+            });
+        });
+
+        // === GUARDAR MÉTODO DE PAGO CON AJAX ===
+        const formMetodoPago = document.getElementById('formMetodoPago');
+        const metodoPagoMensaje = document.getElementById('metodo-pago-mensaje');
+        const confirmarButton = document.getElementById('confirmarPedidoButton');
+
+        if (formMetodoPago) {
+            formMetodoPago.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const restauranteId = formData.get('restaurante_id');
+
+                fetch('/seleccionar_pago', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    metodoPagoMensaje.innerHTML = `<div class="alert-success">${data.message}</div>`;
+                    setTimeout(() => metodoPagoMensaje.innerHTML = '', 3000);
+
+                    // Actualizar estado del botón
+                    if (data.success) {
+                        confirmarButton.disabled = false;
+                        confirmarButton.style.background = '';
+                        confirmarButton.style.cursor = 'pointer';
+
+                        // Actualizar método en modal de confirmación
+                        document.querySelector('#metodo-pago-confirmacion').innerHTML = `
+                            <p style="color: green; font-weight: bold; margin-bottom: 15px;">
+                                Método de pago: <strong>${data.metodo | capitalize}</strong>
+                            </p>
+                        `;
+                    }
+                })
+                .catch(() => {
+                    metodoPagoMensaje.innerHTML = `<div class="alert-error">Error al guardar</div>`;
+                });
+            });
+        }
+
+        // === CHATBOT ===
+        function addMessage(sender, text, isHTML = false) {
+            const msg = document.createElement('div');
+            msg.className = sender === 'bot' ? 'bot-message' : 'user-message';
+            if (isHTML) msg.innerHTML = text;
+            else msg.textContent = text;
+            chatbotMessages.appendChild(msg);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        async function fetchRestaurantes() {
+            try {
+                const res = await fetch('/api/restaurantes');
+                if (!res.ok) throw new Error();
+                restaurantes = await res.json();
+                let lista = '<strong>Restaurantes disponibles:</strong><ul>';
+                restaurantes.forEach((r, i) => {
+                    lista += `<li><strong>${i + 1}.</strong> ${r.nombre} <em>(${r.categoria})</em></li>`;
+                });
+                lista += '</ul><small>Escribe el <strong>número</strong> o el <strong>nombre</strong>.</small>';
+                addMessage('bot', lista, true);
+            } catch {
+                addMessage('bot', 'Error al cargar restaurantes.');
+            }
+        }
+
+        async function fetchMenus(restauranteId) {
+            try {
+                const res = await fetch(`/api/menus/${restauranteId}`);
+                if (!res.ok) throw new Error();
+                menus = await res.json();
+                let lista = `<strong>Menús de ${restauranteSeleccionado.nombre}:</strong><ul>`;
+                menus.forEach((m, i) => {
+                    lista += `<li><strong>${i + 1}.</strong> ${m.nombre} - <strong>$${parseFloat(m.precio).toFixed(2)}</strong></li>`;
+                });
+                lista += `</ul><small>Escribe el <strong>número</strong> o el <strong>nombre</strong> del plato. Luego te preguntaré la cantidad. O escribe <strong>finalizar</strong>.</small>`;
+                addMessage('bot', lista, true);
+            } catch {
+                addMessage('bot', 'Error al cargar menús.');
+            }
+        }
+
+        async function agregarAlCarrito(menuId, cantidad) {
+            try {
+                const res = await fetch('/api/agregar_carrito', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ restaurante_id: restauranteSeleccionado.id, menu_id: menuId, cantidad })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    addMessage('bot', `¡Agregado! ${cantidad > 1 ? cantidad + 'x ' : ''}${data.message.split('agregado')[1] || 'al carrito'}`);
+                } else {
+                    addMessage('bot', data.error || 'No se pudo agregar.');
+                }
+            } catch {
+                addMessage('bot', 'Error de conexión.');
+            }
+        }
+
+        async function obtenerCarritoResumen() {
+            try {
+                const res = await fetch('/api/carrito_resumen');
+                const data = await res.json();
+                return data.restaurantes || [];
+            } catch {
+                return [];
+            }
+        }
+
+        function mostrarFinalizar() {
+            addMessage('bot', '¡Pedido listo! Aquí tienes tu carrito:', true);
+            const btn = document.createElement('button');
+            btn.textContent = 'Ver Carrito';
+            btn.className = 'chatbot-btn';
+            btn.onclick = async () => {
+                const resumen = await obtenerCarritoResumen();
+                if (resumen.length > 0) {
+                    window.location.href = `/menu/${resumen[0].restaurante_id}`;
+                } else {
+                    addMessage('bot', 'Tu carrito está vacío.');
+                }
+                chatbot.style.display = 'none';
+            };
+            const wrapper = document.createElement('div');
+            wrapper.style.textAlign = 'center';
+            wrapper.style.margin = '10px 0';
+            wrapper.appendChild(btn);
+            chatbotMessages.appendChild(wrapper);
+            estado = 'finalizar';
+        }
+
+        function sendMessage() {
+            const input = chatbotUserInput.value.trim();
+            if (!input) return;
+
+            addMessage('user', input);
+            chatbotUserInput.value = '';
+            const lowerInput = input.toLowerCase();
+
+            if (estado === 'elegir_restaurante') {
+                const selected = restaurantes.find(r => r.nombre.toLowerCase() === lowerInput) ||
+                                restaurantes[parseInt(input) - 1];
+                if (selected) {
+                    restauranteSeleccionado = selected;
+                    addMessage('bot', `¡Perfecto! Vamos a <strong>${selected.nombre}</strong>.`);
+                    fetchMenus(selected.id);
+                    estado = 'elegir_menu';
+                } else {
+                    addMessage('bot', 'No encontré ese restaurante. Prueba con el número o nombre exacto.');
+                }
+            } 
+            else if (estado === 'elegir_menu') {
+                if (lowerInput === 'finalizar' || lowerInput === 'terminar') {
+                    mostrarFinalizar();
+                } else {
+                    const selected = menus.find(m => m.nombre.toLowerCase().includes(lowerInput)) ||
+                                    menus[parseInt(input) - 1];
+                    if (selected) {
+                        selectedMenu = selected;
+                        addMessage('bot', `¿Cuántas unidades de ${selected.nombre} quieres? (Mínimo 1)`);
+                        estado = 'elegir_cantidad';
+                    } else {
+                        addMessage('bot', 'No encontré ese platillo. Usa el número o nombre parecido.');
+                    }
+                }
+            } 
+            else if (estado === 'elegir_cantidad') {
+                if (lowerInput === 'finalizar' || lowerInput === 'terminar') {
+                    mostrarFinalizar();
+                } else {
+                    const cantidad = parseInt(input);
+                    if (!isNaN(cantidad) && cantidad >= 1) {
+                        agregarAlCarrito(selectedMenu.id, cantidad);
+                        addMessage('bot', '¿Qué más quieres agregar? Escribe el número o nombre del plato, o "finalizar".');
+                        estado = 'elegir_menu';
+                        selectedMenu = null;
+                    } else {
+                        addMessage('bot', 'Cantidad inválida. Ingresa un número mayor o igual a 1.');
+                    }
+                }
+            }
+        }
+
+        // === EVENTOS CHATBOT ===
+        if (chatbotToggle) {
+            chatbotToggle.addEventListener('click', () => {
+                const isOpen = chatbot.style.display === 'block';
+                chatbot.style.display = isOpen ? 'none' : 'block';
+                if (!isOpen && estado === 'inicio') {
+                    addMessage('bot', '¡Hola! Soy tu asistente de pedidos. ¿En qué restaurante quieres ordenar hoy?');
+                    estado = 'elegir_restaurante';
+                    fetchRestaurantes();
+                }
+            });
+        }
+
+        if (chatbotClose) chatbotClose.addEventListener('click', () => chatbot.style.display = 'none');
+        if (chatbotSend) chatbotSend.addEventListener('click', sendMessage);
+        if (chatbotUserInput) {
+            chatbotUserInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+        }
+    });
+    </script>
+</body>
+</html>

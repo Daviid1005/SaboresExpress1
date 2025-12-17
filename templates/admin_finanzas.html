@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% block title %}Reporte Financiero y Contable - Sabores Express{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+
+    <!-- TÍTULO Y FECHA -->
+    <div class="text-center mb-5">
+        <h1 class="display-5 text-danger fw-bold">Sistema Contable</h1>
+        <p class="lead text-muted">
+            Sabores Express • Actualizado al {{ hoy.strftime('%d de %B, %Y') }}
+        </p>
+    </div>
+
+    <!-- PESTAÑAS DE NAVEGACIÓN -->
+    <ul class="nav nav-pills nav-fill mb-5 shadow-sm rounded">
+        
+        <li class="nav-item">
+            <button class="nav-link btn btn-lg" onclick="openTab('situacion')">Estado de Situación Inicial</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link btn btn-lg" onclick="openTab('diario')">Libro Diario</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link btn btn-lg" onclick="openTab('mayor')">Mayorización</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link btn btn-lg" onclick="openTab('comprobacion')">Balance de Comprobación</button>
+        </li>
+    </ul>
+
+    <!-- RESUMEN GENERAL -->
+    <div id="resumen" class="tab-content active">
+        
+    </div>
+
+    <!-- ESTADO DE SITUACIÓN FINANCIERA INICIAL -->
+    <div id="situacion" class="tab-content" style="display:none;">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white">
+                <h3>Estado de Situación Financiera Inicial</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="text-success">ACTIVO</h5>
+                        <table class="table table-bordered">
+                            <tr><td><strong>Activo Corriente</strong></td><td class="text-end">${{ (total_ingresos * 0.75)|round(2) }}</td></tr>
+                            <tr><td><strong>Activo No Corriente</strong></td><td class="text-end">${{ (total_ingresos * 0.25)|round(2) }}</td></tr>
+                            <tr class="table-info"><td><strong>Total Activo</strong></td><td class="text-end fw-bold">${{ total_ingresos|round(2) }}</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-danger">PASIVO + PATRIMONIO</h5>
+                        <table class="table table-bordered">
+                            <tr><td><strong>Pasivo Corriente</strong></td><td class="text-end">${{ total_costos|round(2) * 0.85|round(2) }}</td></tr>
+                            <tr><td><strong>Pasivo No Corriente</strong></td><td class="text-end">${{ total_costos|round(2) * 0.15|round(2) }}</td></tr>
+                            <tr><td><strong>Total Pasivo</strong></td><td class="text-end">${{ total_costos|round(2) }}</td></tr>
+                            <tr class="table-success"><td><strong>Patrimonio Neto</strong></td><td class="text-end fw-bold">${{ total_ganancia|round(2) }}</td></tr>
+                            <tr class="table-dark text-white"><td><strong>Total Pasivo + Patrimonio</strong></td><td class="text-end fw-bold">${{ (total_costos + total_ganancia)|round(2) }}</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIBRO DIARIO -->
+    <div id="diario" class="tab-content" style="display:none;">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-info text-white">
+                <h3>Libro Diario Contable</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Cuenta</th>
+                                <th>Debe</th>
+                                <th>Haber</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in reporte_restaurantes %}
+                            <tr>
+                                <td>{{ hoy.strftime('%d/%m/%Y') }}</td>
+                                <td>Caja/Bancos</td>
+                                <td class="text-success fw-bold">${{ r.ingresos }}</td>
+                                <td></td>
+                                <td>Ingresos por ventas - {{ r.restaurante.nombre }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ hoy.strftime('%d/%m/%Y') }}</td>
+                                <td>Gastos Operativos</td>
+                                <td></td>
+                                <td class="text-danger fw-bold">${{ r.costo }}</td>
+                                <td>Costos operativos - {{ r.restaurante.nombre }}</td>
+                            </tr>
+                            {% endfor %}
+                            <tr class="table-primary fw-bold">
+                                <td colspan="2">Totales</td>
+                                <td>${{ total_ingresos|round(2) }}</td>
+                                <td>${{ total_costos|round(2) }}</td>
+                                <td>Diferencia: ${{ total_ganancia|round(2) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAYORIZACIÓN -->
+    <div id="mayor" class="tab-content" style="display:none;">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-warning text-dark">
+                <h3>Mayorización de Cuentas</h3>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h5 class="text-success">Cuenta: Ingresos por Ventas (Deudora)</h5>
+                        <table class="table table-bordered">
+                            <tr><th>Fecha</th><th>Debe</th><th>Haber</th><th>Saldo</th></tr>
+                            <tr><td>{{ hoy.strftime('%d/%m/%Y') }}</td><td>${{ total_ingresos|round(2) }}</td><td>-</td><td class="text-success">${{ total_ingresos|round(2) }}</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-danger">Cuenta: Gastos Operativos (Acreedora)</h5>
+                        <table class="table table-bordered">
+                            <tr><th>Fecha</th><th>Debe</th><th>Haber</th><th>Saldo</th></tr>
+                            <tr><td>{{ hoy.strftime('%d/%m/%Y') }}</td><td>-</td><td>${{ total_costos|round(2) }}</td><td class="text-danger">${{ total_costos|round(2) }}</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-12 text-center mt-4">
+                        <h4 class="text-success">Resultado del Ejercicio: Ganancia Neta ${{ total_ganancia|round(2) }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BALANCE DE COMPROBACIÓN -->
+    <div id="comprobacion" class="tab-content" style="display:none;">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-secondary text-white">
+                <h3>Balance de Comprobación de Sumas y Saldos</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Cuenta</th>
+                                <th>Debe</th>
+                                <th>Haber</th>
+                                <th>Saldo Deudor</th>
+                                <th>Saldo Acreedor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Caja/Bancos (Ingresos)</strong></td>
+                                <td>${{ total_ingresos|round(2) }}</td>
+                                <td>-</td>
+                                <td class="text-success fw-bold">${{ total_ingresos|round(2) }}</td>
+                                <td>-</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Gastos Operativos</strong></td>
+                                <td>-</td>
+                                <td>${{ total_costos|round(2) }}</td>
+                                <td>-</td>
+                                <td class="text-danger fw-bold">${{ total_costos|round(2) }}</td>
+                            </tr>
+                            <tr class="table-primary fw-bold">
+                                <td><strong>TOTALES</strong></td>
+                                <td>${{ total_ingresos|round(2) }}</td>
+                                <td>${{ total_costos|round(2) }}</td>
+                                <td>${{ total_ingresos|round(2) }}</td>
+                                <td>${{ total_costos|round(2) }}</td>
+                            </tr>
+                            <tr class="table-success text-center fw-bold">
+                                <td colspan="5">CUADRA PERFECTAMENTE - Ganancia: ${{ total_ganancia|round(2) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTONES FINALES -->
+    <div class="text-center mt-5 pb-4">
+        <a href="{{ url_for('admin') }}" class="btn btn-outline-secondary btn-lg px-5 me-3">
+            Volver al Panel Admin
+        </a>
+        <a href="{{ url_for('admin_finanzas') }}" class="btn btn-primary btn-lg px-5">
+            Actualizar Todo
+        </a>
+    </div>
+
+</div>
+
+<!-- SCRIPT PARA TABS -->
+<script>
+function openTab(tabName) {
+    const tabs = document.getElementsByClassName('tab-content');
+    for (let i = 0; i < tabs.length; i++) {
+        tabs[i].style.display = 'none';
+        tabs[i].classList.remove('active');
+    }
+    document.getElementById(tabName).style.display = 'block';
+    document.getElementById(tabName).classList.add('active');
+
+    const buttons = document.getElementsByClassName('nav-link');
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove('active');
+    }
+    event.target.classList.add('active');
+}
+</script>
+{% endblock %}

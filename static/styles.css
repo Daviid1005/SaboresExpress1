@@ -1,0 +1,2364 @@
+/* Establece la fuente global, márgenes, relleno, color de fondo y tamaño de fuente para todo el cuerpo del documento */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #e0eafc, #cfdef3); /* Degradado azul claro */
+    font-size: 16px;
+}
+
+/* Estiliza el encabezado con un degradado, texto blanco, centrado, padding y posición relativa */
+header {
+    background: linear-gradient(90deg, #ff6b6b, #3c6b7b); /* Degradado rojo a naranja */
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+}
+
+/* Estiliza el título dentro del encabezado, elimina márgenes y define tamaño de fuente */
+header h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+/* Estiliza el párrafo dentro del encabezado, ajusta márgenes */
+header p {
+    margin: 5px 0;
+}
+
+/* Posiciona las acciones del encabezado (como logout o carrito) a la derecha, con flexbox para apilar verticalmente */
+.header-actions {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* Posiciona las acciones del encabezado a la izquierda, con flexbox para apilar verticalmente */
+.header-actions-left {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Estiliza el enlace de logout con color blanco, sin decoración, y efecto hover */
+.logout {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.logout:hover {
+    text-decoration: underline;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Estiliza el botón del carrito con un degradado verde, y efecto hover */
+.cart-button {
+    background: linear-gradient(90deg, #4CAF50, #2E7D32); /* Degradado verde */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+}
+
+.cart-button:hover {
+    background: linear-gradient(90deg, #45a049, #1b5e20); /* Degradado más oscuro */
+}
+
+/* Estiliza el botón de eliminar con un degradado rojo, y efecto hover */
+.delete-button {
+    background: linear-gradient(90deg, #ff4444, #cc0000); /* Degradado rojo */
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+    background: linear-gradient(90deg, #ff6666, #990000); /* Degradado más oscuro */
+}
+
+/* Define el contenedor principal con sidebar usando flexbox y ancho máximo */
+.main-with-sidebar {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 1500px;
+}
+
+/* Estiliza la barra lateral con un degradado gris, padding, y efectos de sombra */
+.sidebar {
+    width: 300px;
+    background: linear-gradient(180deg, #f0f0f0, #e0e0e0); /* Degradado gris */
+    padding: 20px;
+    border-right: 2px solid #ddd;
+    position: fixed;
+    top: 20%;
+    left: 0;
+    height: 400px;
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 50px;
+}
+
+/* Estiliza el título dentro de la barra lateral con color y borde inferior */
+.sidebar h3 {
+    color: #333;
+    margin-top: 0;
+    border-bottom: 2px solid #ff6b6b; /* Borde rojo degradado */
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+/* Estiliza la lista de elementos populares sin viñetas y centrada */
+.popular-list {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+}
+
+.popular-list li {
+    margin: 10px 0;
+}
+
+.popular-list li a {
+    color: #ff6b6b; /* Color rojo degradado */
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.popular-list li a:hover {
+    text-decoration: underline;
+    background-color: rgba(255, 107, 107, 0.1); /* Transparencia del color rojo */
+}
+
+/* Estiliza el contenido principal con un degradado blanco a gris claro */
+.content {
+    flex: 1;
+    margin-left: 250px;
+    margin-right: 250px;
+    padding: 20px;
+    background: linear-gradient(135deg, #ffffff, #b73131); /* Degradado blanco a gris claro */
+    border-radius: 25px;
+    box-shadow: 0 2px 5px rgba(50, 50, 0, 10);
+    border-left: 2px solid #ddd;
+    border-right: 2px solid #ddd;
+    max-width: 900px;
+    margin-top: 20px;
+    margin-bottom: 60px; /* Espacio para el footer */
+}
+
+/* Estiliza las pestañas de la página de administrador */
+.admin-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #ffffff, #f0f0f0); /* Degradado blanco */
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    color: #333;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s, color 0.3s;
+}
+
+.tab-button:hover {
+    color: #ff6b6b; /* Color rojo degradado al pasar el mouse */
+}
+
+.tab-button.active {
+    border-bottom: 2px solid #ff6b6b; /* Borde rojo degradado cuando está activa */
+    color: #ff6b6b;
+}
+
+/* Estiliza el contenido de las pestañas */
+.tab-content {
+    display: none;
+    padding: 20px;
+    background: linear-gradient(135deg, #ffffff, #ffffff); /* Degradado blanco */
+    border: 1px solid #ddd;
+    border-radius: 0 5px 5px 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tab-content h2 {
+    color: #333;
+    margin-top: 0;
+    border-bottom: 2px solid #ff6b6b; /* Borde rojo degradado */
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+/* Estiliza los grupos de formularios dentro de los modales */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #ff6b6b; /* Borde rojo degradado al enfocar */
+    box-shadow: 0 0 5px rgba(255, 107, 107, 0.3);
+    outline: none;
+}
+
+/* Estiliza los botones dentro de los formularios con un degradado */
+.form-group button {
+    background: linear-gradient(90deg, #ff6b6b, #ff8e53); /* Degradado rojo a naranja */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-group button:hover {
+    background: linear-gradient(90deg, #e5533d, #ff7043); /* Degradado más oscuro */
+}
+
+/* Estiliza la sección de formas de pago con un degradado gris */
+.formas-pago {
+    width: 300px;
+    background: linear-gradient(180deg, #f9f9f9, #5d8386); /* Degradado gris */
+    padding: 20px;
+    border-left: 2px solid #ddd;
+    position: fixed;
+    top: 20%;
+    right: 0;
+    height: 400px;
+    overflow-y: auto;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+/* Estiliza el título dentro de la sección de formas de pago */
+.formas-pago h3 {
+    color: #333;
+    margin-top: 0;
+    border-bottom: 2px solid #ff6b6b; /* Borde rojo degradado */
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+/* Estiliza las opciones de pago con flexbox y márgenes */
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+.payment-options label {
+    margin: 10px 0;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.payment-options input[type="radio"] {
+    margin-right: 10px;
+}
+
+/* Estiliza el contenedor de login con flexbox para centrar contenido */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 140px);
+}
+
+/* Estiliza el formulario de autenticación con un degradado blanco */
+.auth-form {
+    background: linear-gradient(135deg, #ffffff, #70456e); /* Degradado blanco */
+    padding: 30px;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Estiliza el título dentro del formulario de autenticación */
+.auth-form h2 {
+    color: #333;
+    margin-top: 0;
+    border-bottom: 2px solid #ff6b6b; /* Borde rojo degradado */
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+/* Estiliza las etiquetas dentro del formulario de autenticación */
+.auth-form label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+/* Estiliza los inputs dentro del formulario de autenticación con transición de borde */
+.auth-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.auth-form input:focus {
+    border-color: #ff6b6b; /* Borde rojo degradado al enfocar */
+    outline: none;
+}
+
+/* Estiliza los botones dentro del formulario de autenticación con un degradado */
+.auth-form button {
+    background: linear-gradient(90deg, #ff6b6b, #ff8e53); /* Degradado rojo a naranja */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.auth-form button:hover {
+    background: linear-gradient(90deg, #e5533d, #ff7043); /* Degradado más oscuro */
+}
+
+/* Estiliza los botones de autenticación (Google, Guest) con margen superior */
+.auth-buttons {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Estiliza los botones de autenticación como bloques con transición */
+.auth-button {
+    display: block;
+    background: linear-gradient(90deg, #333, #555); /* Degradado gris oscuro */
+    color: white;
+    padding: 12px 20px;
+    margin: 10px auto;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    width: 200px;
+    transition: background-color 0.3s;
+}
+
+.auth-button:hover {
+    background: linear-gradient(90deg, #444, #666); /* Degradado más oscuro */
+}
+
+/* Estiliza el botón de Google con un degradado azul */
+.auth-button.google {
+    background: linear-gradient(90deg, #4285F4, #3267D6); /* Degradado azul Google */
+}
+
+.auth-button.google:hover {
+    background: linear-gradient(90deg, #3267D6, #1a237e); /* Degradado más oscuro */
+}
+
+/* Estiliza el botón de invitado con un degradado verde */
+.auth-button.guest {
+    background: linear-gradient(90deg, #4CAF50, #2E7D32); /* Degradado verde */
+}
+
+.auth-button.guest:hover {
+    background: linear-gradient(90deg, #45a049, #1b5e20); /* Degradado más oscuro */
+}
+
+/* Estiliza la barra de búsqueda, grillas de restaurantes y menús con un degradado blanco */
+.search-bar, .restaurantes-grid, .menu-grid {
+    background: linear-gradient(135deg, #ffffff, #ffffff); /* Degradado blanco */
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Estiliza los títulos de las grillas de restaurantes y menús */
+.restaurantes-grid h2, .menu-grid h2 {
+    color: #333;
+    margin-top: 0;
+    border-bottom: 2px solid #ff6b6b; /* Borde rojo degradado */
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+/* Estiliza las etiquetas dentro de la barra de búsqueda y menús */
+.search-bar label, .menu label, .carrito label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+/* Estiliza los inputs y selects dentro de la barra de búsqueda con transición */
+.search-bar input, .menu input, .carrito input, .search-bar select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.search-bar input:focus, .menu input:focus, .carrito input:focus, .search-bar select:focus {
+    border-color: #ff6b6b; /* Borde rojo degradado al enfocar */
+    outline: none;
+}
+
+/* Estiliza los botones de la barra de búsqueda y menús con un degradado */
+.search-bar button, .menu button, .carrito button {
+    background: linear-gradient(90deg, #ff6b6b, #ff8e53); /* Degradado rojo a naranja */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-bar button:hover, .menu button:hover, .carrito button:hover {
+    background: linear-gradient(90deg, #e5533d, #ff7043); /* Degradado más oscuro */
+}
+
+/* Estiliza los mensajes (como confirmaciones) con color verde y centrado */
+.mensaje {
+    color: #2E7D32; /* Verde degradado */
+    margin-top: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Define un contenedor de grilla con columnas responsivas */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* Estiliza las tarjetas de restaurante y menú con un degradado blanco */
+.restaurant-card, .menu-card {
+    background: linear-gradient(135deg, #ffffff, #5c5959); /* Degradado blanco */
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.restaurant-card:hover, .menu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Estiliza las imágenes dentro de las tarjetas */
+.restaurant-image, .menu-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Estiliza la información dentro de las tarjetas con flexbox */
+.restaurant-info, .menu-info {
+    padding: 15px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Estiliza los títulos dentro de las tarjetas */
+.restaurant-card h3, .menu-card h3 {
+    margin: 0 0 10px;
+    color: #ff6b6b; /* Color rojo degradado */
+    text-align: center;
+    font-size: 1.3em;
+}
+
+/* Estiliza los enlaces dentro de las tarjetas de restaurante */
+.restaurant-card a {
+    text-decoration: none;
+    color: #ff6b6b; /* Color rojo degradado */
+    font-weight: bold;
+}
+
+.restaurant-card a:hover {
+    text-decoration: underline;
+}
+
+/* Estiliza los párrafos dentro de las tarjetas de menú */
+.menu-card p {
+    margin: 5px 0;
+    color: #666;
+}
+
+/* Estiliza los formularios dentro de las tarjetas de menú */
+.menu-card form {
+    margin-top: 10px;
+}
+
+.menu-card input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    margin-right: 10px;
+}
+
+/* Estiliza la tabla del carrito con bordes y colores */
+.carrito-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.carrito-table th, .carrito-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.carrito-table th {
+    background: linear-gradient(90deg, #ff6b6b, #ff8e53); /* Degradado rojo a naranja */
+    color: white;
+}
+
+.carrito-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Estiliza el mensaje de carrito vacío */
+.empty-cart {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+
+/* Estiliza el modal con posición fija y fondo oscuro */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    transition: opacity 0.3s;
+}
+
+/* Estiliza el contenido del modal con un degradado blanco */
+.modal-content {
+    background: linear-gradient(135deg, #ffffff, #ffffff); /* Degradado blanco */
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Estiliza los modales de pedido y pago con un degradado */
+.pedido-modal, .payment-modal {
+    padding: 25px;
+    background: linear-gradient(135deg, #ffffff, #f5f5f5); /* Degradado blanco */
+}
+
+/* Estiliza los títulos dentro de los modales */
+.payment-modal h3, .pedido-modal h3 {
+    color: #ff6b6b; /* Color rojo degradado */
+    margin-top: 15px;
+    border-bottom: 1px solid #ff6b6b; /* Borde rojo degradado */
+    padding-bottom: 5px;
+    font-size: 1.2em;
+}
+
+/* Estiliza el botón de envío dentro de los modales con un degradado verde */
+.submit-button {
+    background: linear-gradient(90deg, #4CAF50, #2E7D32); /* Degradado verde */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+    background: linear-gradient(90deg, #45a049, #1b5e20); /* Degradado más oscuro */
+}
+
+/* Estiliza el botón de cerrar el modal */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #ff6b6b; /* Color rojo degradado */
+    text-decoration: none;
+}
+
+/* Estiliza el botón de retroceso con un degradado gris */
+.back-button {
+    display: block;
+    background: linear-gradient(90deg, #8b5d5d, #119b24); /* Degradado gris oscuro */
+    color: white;
+    padding: 10px 20px;
+    margin: 0;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    width: fit-content;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background: linear-gradient(90deg, #444, #666); /* Degradado más oscuro */
+}
+
+/* Estiliza el footer con un degradado oscuro */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(90deg, #333, #222); /* Degradado gris oscuro */
+    color: white;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Define la animación de entrada para los modales */
+@keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Reglas de medios para pantallas pequeñas (máx. 600px) */
+@media (max-width: 600px) {
+    .modal-content {
+        margin: 20% auto;
+        width: 85%;
+    }
+
+    .sidebar, .formas-pago {
+        width: 250px;
+    }
+
+    .content {
+        margin-left: 270px;
+        margin-right: 270px;
+    }
+
+    .admin-tabs {
+        flex-direction: column;
+    }
+
+    .tab-button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Estilo para páginas con imagen de fondo */
+body.with-background {
+    background: linear-gradient(rgba(87, 84, 84, 0.7), rgba(24, 29, 24, 0.7)), url('/static/uploads/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* Botón de productos en el header */
+.productos-btn {
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-left: 10px;
+    transition: background 0.3s;
+}
+
+.productos-btn:hover {
+    background: #218838;
+}
+
+/* Enlace destacado de productos */
+.featured-products-link {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.featured-products-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    display: inline-block;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.featured-products-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Enlace de productos en tarjetas de restaurante */
+.restaurant-products-link {
+    display: inline-block;
+    background: #17a2b8;
+    color: white;
+    padding: 5px 10px;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+
+.restaurant-products-link:hover {
+    background: #138496;
+}
+
+/* Grid de productos */
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.producto-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.producto-card:hover {
+    transform: translateY(-5px);
+}
+
+.producto-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.producto-image.placeholder {
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3em;
+}
+
+.producto-info h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.producto-descripcion {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.producto-precio {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #28a745;
+    margin: 10px 0;
+}
+
+.producto-disponible .disponible {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.producto-disponible .no-disponible {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Formulario agregar al carrito */
+.add-to-cart-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.cantidad-input {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.add-to-cart-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.add-to-cart-btn:hover:not(.disabled) {
+    background: #218838;
+}
+
+.add-to-cart-btn.disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Filtros actuales */
+.current-filter {
+    background: #e9ecef;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+    display: flex;
+    justify-content: between;
+    align-items: center;
+}
+
+.clear-filter {
+    color: #dc3545;
+    text-decoration: none;
+    margin-left: auto;
+}
+
+.clear-filter:hover {
+    text-decoration: underline;
+}
+
+/* Sin productos */
+.no-products {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.sidebar-products-link {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+.btn-agricola{
+    background:#27ae60;
+    color:#fff;
+    padding:10px 20px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+    margin-left:10px;
+}
+.btn-agricola:hover{background:#219653;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* --- CHATBOT ESTILOS MEJORADOS --- */
+.chatbot-toggle {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(255, 107, 107, 0.4);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.chatbot-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.6);
+}
+
+.chatbot-container {
+    display: none;
+    position: fixed;
+    bottom: 95px;
+    right: 25px;
+    width: 340px;
+    max-height: 500px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 1000;
+    border: 1px solid #eee;
+}
+
+.chatbot-header {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    color: white;
+    padding: 14px 16px;
+    font-weight: 600;
+    font-size: 1.1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.chatbot-header span:first-child::before {
+    content: "🍔 ";
+}
+
+.chatbot-close {
+    cursor: pointer;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 0 8px;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    transition: 0.3s;
+}
+
+.chatbot-close:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.chatbot-messages {
+    padding: 16px;
+    height: 320px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chatbot-message {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    line-height: 1.4;
+    font-size: 0.95em;
+    word-wrap: break-word;
+    position: relative;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.bot-message {
+    background: white;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e0e0e0;
+}
+
+.bot-message::before {
+    content: "🤖";
+    margin-right: 6px;
+    font-size: 1.1em;
+}
+
+.user-message {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 2px 6px rgba(255, 107, 107, 0.3);
+}
+
+.user-message::after {
+    content: "👤";
+    margin-left: 6px;
+    font-size: 1.1em;
+}
+
+/* Listas bonitas en mensajes del bot */
+.bot-message ul {
+    margin: 8px 0;
+    padding-left: 20px;
+}
+
+.bot-message li {
+    margin: 4px 0;
+    font-weight: 500;
+}
+
+.bot-message strong {
+    color: #e5533d;
+}
+
+/* Botón dentro del chat */
+.chatbot-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 14px;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
+    transition: 0.3s;
+}
+
+.chatbot-btn:hover {
+    background: linear-gradient(135deg, #45a049, #388e3c);
+    transform: translateY(-1px);
+}
+
+.chatbot-input {
+    display: flex;
+    padding: 12px;
+    background: white;
+    border-top: 1px solid #eee;
+    gap: 8px;
+}
+
+.chatbot-input input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 0.95em;
+    outline: none;
+    transition: border 0.3s;
+}
+
+.chatbot-input input:focus {
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+}
+
+.chatbot-input button {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    color: white;
+    border: none;
+    padding: 0 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.chatbot-input button:hover {
+    background: linear-gradient(135deg, #e5533d, #ff7043);
+}
+
+
+
+
+
+
+
+.chatbot-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.chatbot-container {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 350px;
+    height: 500px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    font-family: Arial, sans-serif;
+}
+
+.chatbot-header {
+    background: #007bff;
+    color: white;
+    padding: 15px;
+    border-radius: 15px 15px 0 0;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chatbot-close {
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.chatbot-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: #f8f9fa;
+}
+
+.chatbot-message {
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 80%;
+}
+
+.bot-message {
+    background: #e9ecef;
+    align-self: flex-start;
+}
+
+.user-message {
+    background: #007bff;
+    color: white;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+.chatbot-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.chatbot-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    margin-right: 10px;
+}
+
+.chatbot-input button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.chatbot-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+
+
+.action-buttons {
+    white-space: nowrap;
+}
+
+.edit-button {
+    background: #ffc107;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.edit-button:hover {
+    background: #e0a800;
+}
+
+.small-modal {
+    max-width: 400px;
+}
+
+#editarCantidadForm .form-group {
+    margin: 15px 0;
+}
+
+
+
+
+.action-buttons {
+    white-space: nowrap;
+}
+
+.edit-button {
+    background: #ffc107;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.edit-button:hover {
+    background: #e0a800;
+}
+
+.small-modal {
+    max-width: 400px;
+}
+
+#editarCantidadForm .form-group {
+    margin: 15px 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* === ESTILOS DEL MERCADO AGRÍCOLA === */
+.agricola-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,.08);
+    transition: .3s;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 20px rgba(0,0,0,.15);
+}
+
+.card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.info {
+    padding: 15px;
+}
+
+.precio-venta {
+    color: #c0392b;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.stock {
+    color: #555;
+    font-size: .9em;
+}
+
+.add-form {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.add-form input {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.add-btn {
+    background: #27ae60;
+    color: #fff;
+    border: none;
+    padding: 7px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-btn:disabled {
+    background: #95a5a6;
+    cursor: not-allowed;
+}
+
+/* === RESTO DEL CSS (el que ya tenías) === */
+body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #e0eafc, #cfdef3); font-size: 16px; }
+header { background: linear-gradient(90deg, #ff6b6b, #3c6b7b); color: white; text-align: center; padding: 20px; position: relative; }
+/* ... (pega TODO el segundo CSS aquí) ... */
+
+
+
+
+
+/* Establece la fuente global, márgenes, relleno, color de fondo y tamaño de fuente para todo el cuerpo del documento */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #e0eafc, #cfdef3); /* Degradado azul claro */
+    font-size: 16px;
+}
+
+/* Estiliza el encabezado con un degradado, texto blanco, centrado, padding y posición relativa */
+header {
+    background: linear-gradient(90deg, #ff6b6b, #3c6b7b); /* Degradado rojo a naranja */
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+}
+
+/* Estiliza el título dentro del encabezado, elimina márgenes y define tamaño de fuente */
+header h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+/* Estiliza el párrafo dentro del encabezado, ajusta márgenes */
+header p {
+    margin: 5px 0;
+}
+
+/* Posiciona las acciones del encabezado (como logout o carrito) a la derecha, con flexbox para apilar verticalmente */
+.header-actions {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* Posiciona las acciones del encabezado a la izquierda, con flexbox para apilar verticalmente */
+.header-actions-left {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Estiliza el enlace de logout con color blanco, sin decoración, y efecto hover */
+.logout {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.logout:hover {
+    text-decoration: underline;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Estiliza el botón del carrito con un degradado verde, y efecto hover */
+.cart-button {
+    background: linear-gradient(90deg, #4CAF50, #2E7D32); /* Degradado verde */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+}
+
+.cart-button:hover {
+    background: linear-gradient(90deg, #45a049, #1b5e20); /* Degradado más oscuro */
+}
+
+/* Estiliza el botón de eliminar con un degradado rojo, y efecto hover */
+.delete-button {
+    background: linear-gradient(90deg, #ff4444, #cc0000); /* Degradado rojo */
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+    background: linear-gradient(90deg, #ff6666, #990000); /* Degradado más oscuro */
+}
+
+/* Define el contenedor principal con sidebar usando flexbox y ancho máximo */
+.main-with-sidebar {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 1500px;
+}
+
+/* Estiliza la barra lateral con un degradado gris, padding, y efectos de sombra */
+.sidebar {
+    width: 300px;
+    background: linear-gradient(180deg, #f0f0f0, #e0e0e0); /* Degradado gris */
+    padding: 20px;
+    border-right: 2px solid #ddd;
+    position: fixed;
+    top: 20%;
+    left: 0;
+    height: 400px;
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 50px;
+}
+
+/* Estiliza el título dentro de la barra lateral con color y borde inferior */
+.sidebar h3 {
+    color: #333;
+    margin-top: 0;
+    border-bottom: 2px solid #ff6b6b; /* Borde rojo degradado */
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+/* Estiliza la lista de elementos populares sin viñetas y centrada */
+.popular-list {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+}
+
+.popular-list li {
+    margin: 10px 0;
+}
+
+.popular-list li a {
+    color: #ff6b6b; /* Color rojo degradado */
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.popular-list li a:hover {
+    text-decoration: underline;
+    background-color: rgba(255, 107, 107, 0.1); /* Transparencia del color rojo */
+}
+
+/* Estiliza el contenido principal con un degradado blanco a gris claro */
+.content {
+    flex: 1;
+    margin-left: 250px;
+    margin-right: 250px;
+    padding: 20px;
+    background: linear-gradient(135deg, #ffffff, #b73131); /* Degradado blanco a gris claro */
+    border-radius: 25px;
+    box-shadow: 0 2px 5px rgba(50, 50, 0, 10);
+    border-left: 2px solid #ddd;
+    border-right: 2px solid #ddd;
+    max-width: 900px;
+    margin-top: 20px;
+    margin-bottom: 60px; /* Espacio para el footer */
+}
+
+/* Estiliza las pestañas de la página de administrador */
+.admin-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #ffffff, #f0f0f0); /* Degradado blanco */
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    color: #333;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s, color 0.3s;
+}
+
+.tab-button:hover {
+    color: #ff6b6b; /* Color rojo degradado al pasar el mouse */
+}
+
+.tab-button.active {
+    border-bottom: 2px solid #ff6b6b; /* Borde rojo degradado cuando está activa */
+    color: #ff6b6b;
+}
+
+/* Estiliza el contenido de las pestañas */
+.tab-content {
+    display: none;
+    padding: 20px;
+    background: linear-gradient(135deg, #ffffff, #ffffff); /* Degradado blanco */
+    border: 1px solid #ddd;
+    border-radius: 0 5px 5px 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tab-content h2 {
+    color: #333;
+    margin-top: 0;
+    border-bottom: 2px solid #ff6b6b; /* Borde rojo degradado */
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+/* Estiliza los grupos de formularios dentro de los modales */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #ff6b6b; /* Borde rojo degradado al enfocar */
+    box-shadow: 0 0 5px rgba(255, 107, 107, 0.3);
+    outline: none;
+}
+
+/* Estiliza los botones dentro de los formularios con un degradado */
+.form-group button {
+    background: linear-gradient(90deg, #ff6b6b, #ff8e53); /* Degradado rojo a naranja */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-group button:hover {
+    background: linear-gradient(90deg, #e5533d, #ff7043); /* Degradado más oscuro */
+}
+
+/* Estiliza la sección de formas de pago con un degradado gris */
+.formas-pago {
+    width: 300px;
+    background: linear-gradient(180deg, #f9f9f9, #5d8386); /* Degradado gris */
+    padding: 20px;
+    border-left: 2px solid #ddd;
+    position: fixed;
+    top: 20%;
+    right: 0;
+    height: 400px;
+    overflow-y: auto;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+/* Estiliza el título dentro de la sección de formas de pago */
+.formas-pago h3 {
+    color: #333;
+    margin-top: 0;
+    border-bottom: 2px solid #ff6b6b; /* Borde rojo degradado */
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+/* Estiliza las opciones de pago con flexbox y márgenes */
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+.payment-options label {
+    margin: 10px 0;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.payment-options input[type="radio"] {
+    margin-right: 10px;
+}
+
+/* Estiliza el contenedor de login con flexbox para centrar contenido */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 140px);
+}
+
+/* Estiliza el formulario de autenticación con un degradado blanco */
+.auth-form {
+    background: linear-gradient(135deg, #ffffff, #70456e); /* Degradado blanco */
+    padding: 30px;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Estiliza el título dentro del formulario de autenticación */
+.auth-form h2 {
+    color: #333;
+    margin-top: 0;
+    border-bottom: 2px solid #ff6b6b; /* Borde rojo degradado */
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+/* Estiliza las etiquetas dentro del formulario de autenticación */
+.auth-form label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+/* Estiliza los inputs dentro del formulario de autenticación con transición de borde */
+.auth-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.auth-form input:focus {
+    border-color: #ff6b6b; /* Borde rojo degradado al enfocar */
+    outline: none;
+}
+
+/* Estiliza los botones dentro del formulario de autenticación con un degradado */
+.auth-form button {
+    background: linear-gradient(90deg, #ff6b6b, #ff8e53); /* Degradado rojo a naranja */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.auth-form button:hover {
+    background: linear-gradient(90deg, #e5533d, #ff7043); /* Degradado más oscuro */
+}
+
+/* Estiliza los botones de autenticación (Google, Guest) con margen superior */
+.auth-buttons {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Estiliza los botones de autenticación como bloques con transición */
+.auth-button {
+    display: block;
+    background: linear-gradient(90deg, #333, #555); /* Degradado gris oscuro */
+    color: white;
+    padding: 12px 20px;
+    margin: 10px auto;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    width: 200px;
+    transition: background-color 0.3s;
+}
+
+.auth-button:hover {
+    background: linear-gradient(90deg, #444, #666); /* Degradado más oscuro */
+}
+
+/* Estiliza el botón de Google con un degradado azul */
+.auth-button.google {
+    background: linear-gradient(90deg, #4285F4, #3267D6); /* Degradado azul Google */
+}
+
+.auth-button.google:hover {
+    background: linear-gradient(90deg, #3267D6, #1a237e); /* Degradado más oscuro */
+}
+
+/* Estiliza el botón de invitado con un degradado verde */
+.auth-button.guest {
+    background: linear-gradient(90deg, #4CAF50, #2E7D32); /* Degradado verde */
+}
+
+.auth-button.guest:hover {
+    background: linear-gradient(90deg, #45a049, #1b5e20); /* Degradado más oscuro */
+}
+
+/* Estiliza la barra de búsqueda, grillas de restaurantes y menús con un degradado blanco */
+.search-bar, .restaurantes-grid, .menu-grid {
+    background: linear-gradient(135deg, #ffffff, #ffffff); /* Degradado blanco */
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Estiliza los títulos de las grillas de restaurantes y menús */
+.restaurantes-grid h2, .menu-grid h2 {
+    color: #333;
+    margin-top: 0;
+    border-bottom: 2px solid #ff6b6b; /* Borde rojo degradado */
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+/* Estiliza las etiquetas dentro de la barra de búsqueda y menús */
+.search-bar label, .menu label, .carrito label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+/* Estiliza los inputs y selects dentro de la barra de búsqueda con transición */
+.search-bar input, .menu input, .carrito input, .search-bar select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.search-bar input:focus, .menu input:focus, .carrito input:focus, .search-bar select:focus {
+    border-color: #ff6b6b; /* Borde rojo degradado al enfocar */
+    outline: none;
+}
+
+/* Estiliza los botones de la barra de búsqueda y menús con un degradado */
+.search-bar button, .menu button, .carrito button {
+    background: linear-gradient(90deg, #ff6b6b, #ff8e53); /* Degradado rojo a naranja */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-bar button:hover, .menu button:hover, .carrito button:hover {
+    background: linear-gradient(90deg, #e5533d, #ff7043); /* Degradado más oscuro */
+}
+
+/* Estiliza los mensajes (como confirmaciones) con color verde y centrado */
+.mensaje {
+    color: #2E7D32; /* Verde degradado */
+    margin-top: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Define un contenedor de grilla con columnas responsivas */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* Estiliza las tarjetas de restaurante y menú con un degradado blanco */
+.restaurant-card, .menu-card {
+    background: linear-gradient(135deg, #ffffff, #5c5959); /* Degradado blanco */
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.restaurant-card:hover, .menu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Estiliza las imágenes dentro de las tarjetas */
+.restaurant-image, .menu-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Estiliza la información dentro de las tarjetas con flexbox */
+.restaurant-info, .menu-info {
+    padding: 15px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Estiliza los títulos dentro de las tarjetas */
+.restaurant-card h3, .menu-card h3 {
+    margin: 0 0 10px;
+    color: #ff6b6b; /* Color rojo degradado */
+    text-align: center;
+    font-size: 1.3em;
+}
+
+/* Estiliza los enlaces dentro de las tarjetas de restaurante */
+.restaurant-card a {
+    text-decoration: none;
+    color: #ff6b6b; /* Color rojo degradado */
+    font-weight: bold;
+}
+
+.restaurant-card a:hover {
+    text-decoration: underline;
+}
+
+/* Estiliza los párrafos dentro de las tarjetas de menú */
+.menu-card p {
+    margin: 5px 0;
+    color: #666;
+}
+
+/* Estiliza los formularios dentro de las tarjetas de menú */
+.menu-card form {
+    margin-top: 10px;
+}
+
+.menu-card input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    margin-right: 10px;
+}
+
+/* Estiliza la tabla del carrito con bordes y colores */
+.carrito-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.carrito-table th, .carrito-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.carrito-table th {
+    background: linear-gradient(90deg, #ff6b6b, #ff8e53); /* Degradado rojo a naranja */
+    color: white;
+}
+
+.carrito-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Estiliza el mensaje de carrito vacío */
+.empty-cart {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+
+/* Estiliza el modal con posición fija y fondo oscuro */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    transition: opacity 0.3s;
+}
+
+/* Estiliza el contenido del modal con un degradado blanco */
+.modal-content {
+    background: linear-gradient(135deg, #ffffff, #ffffff); /* Degradado blanco */
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Estiliza los modales de pedido y pago con un degradado */
+.pedido-modal, .payment-modal {
+    padding: 25px;
+    background: linear-gradient(135deg, #ffffff, #f5f5f5); /* Degradado blanco */
+}
+
+/* Estiliza los títulos dentro de los modales */
+.payment-modal h3, .pedido-modal h3 {
+    color: #ff6b6b; /* Color rojo degradado */
+    margin-top: 15px;
+    border-bottom: 1px solid #ff6b6b; /* Borde rojo degradado */
+    padding-bottom: 5px;
+    font-size: 1.2em;
+}
+
+/* Estiliza el botón de envío dentro de los modales con un degradado verde */
+.submit-button {
+    background: linear-gradient(90deg, #4CAF50, #2E7D32); /* Degradado verde */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+    background: linear-gradient(90deg, #45a049, #1b5e20); /* Degradado más oscuro */
+}
+
+/* Estiliza el botón de cerrar el modal */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #ff6b6b; /* Color rojo degradado */
+    text-decoration: none;
+}
+
+/* Estiliza el botón de retroceso con un degradado gris */
+.back-button {
+    display: block;
+    background: linear-gradient(90deg, #8b5d5d, #119b24); /* Degradado gris oscuro */
+    color: white;
+    padding: 10px 20px;
+    margin: 0;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    width: fit-content;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background: linear-gradient(90deg, #444, #666); /* Degradado más oscuro */
+}
+
+/* Estiliza el footer con un degradado oscuro */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(90deg, #333, #222); /* Degradado gris oscuro */
+    color: white;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Define la animación de entrada para los modales */
+@keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Reglas de medios para pantallas pequeñas (máx. 600px) */
+@media (max-width: 600px) {
+    .modal-content {
+        margin: 20% auto;
+        width: 85%;
+    }
+
+    .sidebar, .formas-pago {
+        width: 250px;
+    }
+
+    .content {
+        margin-left: 270px;
+        margin-right: 270px;
+    }
+
+    .admin-tabs {
+        flex-direction: column;
+    }
+
+    .tab-button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Estilo para páginas con imagen de fondo */
+body.with-background {
+    background: linear-gradient(rgba(87, 84, 84, 0.7), rgba(24, 29, 24, 0.7)), url('/static/uploads/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* Botón de productos en el header */
+.productos-btn {
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-left: 10px;
+    transition: background 0.3s;
+}
+
+.productos-btn:hover {
+    background: #218838;
+}
+
+/* Enlace destacado de productos */
+.featured-products-link {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.featured-products-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    display: inline-block;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.featured-products-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Enlace de productos en tarjetas de restaurante */
+.restaurant-products-link {
+    display: inline-block;
+    background: #17a2b8;
+    color: white;
+    padding: 5px 10px;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+
+.restaurant-products-link:hover {
+    background: #138496;
+}
+
+/* Grid de productos */
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.producto-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.producto-card:hover {
+    transform: translateY(-5px);
+}
+
+.producto-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.producto-image.placeholder {
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3em;
+}
+
+.producto-info h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.producto-descripcion {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.producto-precio {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #28a745;
+    margin: 10px 0;
+}
+
+.producto-disponible .disponible {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.producto-disponible .no-disponible {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Formulario agregar al carrito */
+.add-to-cart-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.cantidad-input {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.add-to-cart-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.add-to-cart-btn:hover:not(.disabled) {
+    background: #218838;
+}
+
+.add-to-cart-btn.disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Filtros actuales */
+.current-filter {
+    background: #e9ecef;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+    display: flex;
+    justify-content: between;
+    align-items: center;
+}
+
+.clear-filter {
+    color: #dc3545;
+    text-decoration: none;
+    margin-left: auto;
+}
+
+.clear-filter:hover {
+    text-decoration: underline;
+}
+
+/* Sin productos */
+.no-products {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.sidebar-products-link {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+.btn-agricola{
+    background:#27ae60;
+    color:#fff;
+    padding:10px 20px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+    margin-left:10px;
+}
+.btn-agricola:hover{background:#219653;}

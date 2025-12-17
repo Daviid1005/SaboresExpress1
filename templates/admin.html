@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin | SaboresExpress</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6f9; margin: 0; }
+        header { background: #d07610; color: white; padding: 1.5rem; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        header h1 { margin: 0; font-size: 2rem; }
+        header p { margin: 8px 0 0; font-size: 1.1rem; opacity: 0.9; }
+        .logout { background: #219653; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; }
+
+        .main-with-sidebar { display: flex; max-width: 1200px; margin: 2rem auto; gap: 2rem; padding: 0 1rem; }
+        .sidebar { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); width: 260px; }
+        .sidebar h3 { margin-top: 0; color: #27ae60; border-bottom: 2px solid #27ae60; padding-bottom: 8px; }
+        .popular-list { list-style: none; padding: 0; margin: 1rem 0 0; }
+        .popular-list li { margin: 0.8rem 0; }
+        .popular-list a { color: #27ae60; text-decoration: none; font-weight: 500; display: block; padding: 8px 12px; border-radius: 6px; transition: all 0.2s; }
+        .popular-list a:hover { background: #d5f5e3; color: #1e8449; }
+
+        .content { flex: 1; background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .mensaje { background: #d4edda; color: #155724; padding: 12px; border-radius: 8px; margin-bottom: 1.5rem; text-align: center; }
+
+        .admin-tabs { display: flex; gap: 10px; margin-bottom: 1.5rem; border-bottom: 1px solid #eee; }
+        .tab-button {
+            background: none; border: none; padding: 12px 20px; font-size: 1rem; font-weight: 600;
+            color: #666; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s;
+        }
+        .tab-button.active, .tab-button:hover { color: #27ae60; border-bottom: 3px solid #27ae60; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; color: #333; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem;
+        }
+        .form-group textarea { height: 90px; resize: vertical; }
+        .form-group button {
+            background: #27ae60; color: white; border: none; padding: 12px 24px;
+            border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;
+        }
+        .form-group button:hover { background: #219653; }
+
+        .carrito-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .carrito-table th { background: #27ae60; color: white; padding: 12px; text-align: left; }
+        .carrito-table td { padding: 10px; border-bottom: 1px solid #eee; }
+        .carrito-table tr:hover { background: #f8fff9; }
+        .delete-button, .form-group button { background: #e74c3c; }
+        .delete-button:hover { background: #c0392b; }
+
+        .empty-cart { color: #777; font-style: italic; text-align: center; padding: 2rem; }
+
+        footer { text-align: center; padding: 1.5rem; background: #2c3e50; color: #bdc3c7; margin-top: 3rem; }
+
+        @media (max-width: 992px) {
+            .main-with-sidebar { flex-direction: column; }
+            .sidebar { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>SaboresExpress</h1>
+        <p>Panel de Administración</p>
+        <div class="header-actions">
+            <a href="{{ url_for('logout') }}" class="logout">Cerrar Sesión</a>
+        </div>
+    </header>
+
+    <div class="main-with-sidebar">
+        <div class="sidebar">
+            <h3>Opciones de Administración</h3>
+            <ul class="popular-list">
+                <li><a href="#" onclick="openTab('add-restaurante'); return false;">Añadir Restaurante</a></li>
+                <li><a href="#" onclick="openTab('add-menu'); return false;">Añadir Menú</a></li>
+                <li><a href="#" onclick="openTab('existing-restaurantes'); return false;">Restaurantes y Menús</a></li>
+                <li><a href="{{ url_for('admin_agricola') }}">Gestión Agrícola</a></li>
+                <a href="{{ url_for('admin_finanzas') }}" class="btn btn-danger btn-lg w-100 mb-3">
+                    Reporte Financiero
+                </a>
+            </ul>
+        </div>
+
+        <div class="content">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="mensaje">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="admin-tabs">
+                <button class="tab-button active" onclick="openTab('add-restaurante')">Añadir Restaurante</button>
+                <button class="tab-button" onclick="openTab('add-menu')">Añadir Menú</button>
+                <button class="tab-button" onclick="openTab('existing-restaurantes')">Restaurantes y Menús</button>
+                <button class="tab-button" onclick="window.location.href='{{ url_for('admin_agricola') }}'">Gestión Agrícola</button>
+            </div>
+
+            <!-- Pestaña: Añadir Restaurante -->
+            <div id="add-restaurante" class="tab-content active">
+                <h2>Añadir Nuevo Restaurante</h2>
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="nombre">Nombre del Restaurante:</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Ej: Sushi Palace" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción:</label>
+                        <textarea id="descripcion" name="descripcion" placeholder="Especialidad, ambiente, ubicación..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="categoria">Categoría:</label>
+                        <select id="categoria" name="categoria">
+                            <option value="Sushi">Sushi</option>
+                            <option value="Pollo">Pollo</option>
+                            <option value="Casa China">Casa China</option>
+                            <option value="Comidas Rápidas">Comidas Rápidas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="imagen">Imagen del Restaurante:</label>
+                        <input type="file" id="imagen" name="imagen" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" name="restaurante">Añadir Restaurante</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Pestaña: Añadir Menú -->
+            <div id="add-menu" class="tab-content">
+                <h2>Añadir Menú a Restaurante</h2>
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="restaurante_id">Seleccionar Restaurante:</label>
+                        <select id="restaurante_id" name="restaurante_id" required>
+                            <option value="">-- Elige un restaurante --</option>
+                            {% for restaurante in restaurantes %}
+                                <option value="{{ restaurante.id }}">{{ restaurante.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre_menu">Nombre del Plato:</label>
+                        <input type="text" id="nombre_menu" name="nombre" placeholder="Ej: Roll California" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion_menu">Descripción:</label>
+                        <textarea id="descripcion_menu" name="descripcion" placeholder="Ingredientes principales..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="precio">Precio ($):</label>
+                        <input type="number" id="precio" name="precio" step="0.01" min="0" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="categoria_menu">Categoría del Menú:</label>
+                        <select id="categoria_menu" name="categoria">
+                            <option value="Entradas">Entradas</option>
+                            <option value="Platos Fuertes">Platos Fuertes</option>
+                            <option value="Bebidas">Bebidas</option>
+                            <option value="Rollitos">Rollitos</option>
+                            <option value="Comidas Rápidas">Comidas Rápidas</option>
+                            <option value="Pizzas">Pizzas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="imagen_menu">Imagen del Plato:</label>
+                        <input type="file" id="imagen_menu" name="imagen" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" name="menu">Añadir Menú</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Pestaña: Restaurantes y Menús Existentes -->
+            <div id="existing-restaurantes" class="tab-content">
+                <h2>Restaurantes Registrados</h2>
+                {% if restaurantes %}
+                    <table class="carrito-table">
+                        <tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Descripción</th><th>Acciones</th></tr>
+                        {% for restaurante in restaurantes %}
+                        <tr>
+                            <td>{{ restaurante.id }}</td>
+                            <td><strong>{{ restaurante.nombre }}</strong></td>
+                            <td>{{ restaurante.categoria }}</td>
+                            <td>{{ restaurante.descripcion|truncate(60) }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('eliminar_restaurante', restaurante_id=restaurante.id) }}" style="display:inline;">
+                                    <button type="submit" class="delete-button" onclick="return confirm('¿Eliminar {{ restaurante.nombre }}?')">Eliminar</button>
+                                </form>
+                                <form method="GET" action="{{ url_for('actualizar_restaurante', restaurante_id=restaurante.id) }}" style="display:inline;">
+                                    <button type="submit" style="background:#3498db; color:white; border:none; padding:6px 10px; border-radius:5px; font-size:0.85rem;">Actualizar</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <p class="empty-cart">No hay restaurantes registrados.</p>
+                {% endif %}
+
+                <h2 style="margin-top: 2.5rem;">Menús Registrados</h2>
+                {% if menus %}
+                    <table class="carrito-table">
+                        <tr><th>ID</th><th>Restaurante</th><th>Plato</th><th>Categoría</th><th>Precio</th><th>Acciones</th></tr>
+                        {% for menu in menus %}
+                        <tr>
+                            <td>{{ menu.id }}</td>
+                            <td>{{ menu.restaurante.nombre }}</td>
+                            <td><strong>{{ menu.nombre }}</strong></td>
+                            <td>{{ menu.categoria }}</td>
+                            <td><strong>${{ "%.2f"|format(menu.precio) }}</strong></td>
+                            <td>
+                                <form method="POST" action="{{ url_for('eliminar_menu', menu_id=menu.id) }}" style="display:inline;">
+                                    <button type="submit" class="delete-button" onclick="return confirm('¿Eliminar {{ menu.nombre }}?')">Eliminar</button>
+                                </form>
+                                <form method="GET" action="{{ url_for('actualizar_menu', menu_id=menu.id) }}" style="display:inline;">
+                                    <button type="submit" style="background:#3498db; color:white; border:none; padding:6px 10px; border-radius:5px; font-size:0.85rem;">Actualizar</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <p class="empty-cart">No hay menús registrados.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 SaboresExpress. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        function openTab(tabName) {
+            const tabs = document.getElementsByClassName('tab-content');
+            const buttons = document.getElementsByClassName('tab-button');
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>

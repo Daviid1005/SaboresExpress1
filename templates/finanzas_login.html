@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Acceso Finanzas{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white text-center">
+                    <h4>Acceso Restringido - Finanzas</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Clave de Acceso</label>
+                            <input type="password" name="clave" class="form-control" required>
+                            <small class="text-muted">Solo administradores autorizados.</small>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">Ingresar</button>
+                    </form>
+                    {% with messages = get_flashed_messages() %}
+                      {% if messages %}
+                        <div class="alert alert-danger mt-3">
+                          {{ messages[0] }}
+                        </div>
+                      {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
