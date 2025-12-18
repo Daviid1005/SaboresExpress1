@@ -23,13 +23,17 @@ FINANZAS_KEY = "root10"  # Cambia esto en producción
 
 
 
-load_dotenv()  # Para .env local (opcional)
+load_dotenv()
 
 database_url = os.environ.get('DATABASE_URL')
-if database_url and database_url.startswith('postgres://'):
-    database_url = database_url.replace('postgres://', 'postgresql://', 1)  # Fix importante para SQLAlchemy
+if not database_url:
+    raise ValueError("No se encontró la variable DATABASE_URL. Verifica las variables de entorno en Railway.")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = database_url or 'postgresql://postgres:root@localhost:5432/sabores_express'  # Fallback local
+# Railway ya te da la URL con postgresql://, pero por si acaso
+if database_url.startswith('postgres://'):
+    database_url = database_url.replace('postgres://', 'postgresql://', 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
